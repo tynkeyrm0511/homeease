@@ -12,4 +12,4 @@ const PORT = 3000;
 //Chay ung dung
 app.listen(PORT, () => {
     console.log(`Server đang chạy tại http://localhost:${PORT}`);
-})
+});
