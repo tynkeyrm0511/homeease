@@ -1,14 +1,18 @@
 const express = require('express');
 const router = express.Router();
+const { getResidents, addResident, updateResident, deleteResident, getResidentDetail } = require('../controllers/residentController')
 
-//Route: lay danh sach cu dan
-router.get('/', (req, res) => {
-    res.send('Danh sach dan cu');
-});
+//Route: get all residents
+router.get('/', getResidents);
+//Route: get detail resident
+router.get('/:id', getResidentDetail);
 
-//Route: them dan cu moi
-router.post('/add', (req, res) => {
-    res.send('Them dan cu moi');
-});
+//Route: add a new resident
+router.post('/add', addResident);
 
+//Route: update resident
+router.put('/:id', updateResident);
+
+//Route: delete resident
+router.delete('/:id', deleteResident);
 module.exports = router;
