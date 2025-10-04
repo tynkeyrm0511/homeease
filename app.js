@@ -5,7 +5,7 @@ require('dotenv').config();
 const express = require('express');
 
 //Import middleware configuration
-const applyMiddlewares = require('./middleware');
+const applyMiddlewares = require('./middleware/middleware');
 
 //Initialize the Express application
 const app = express();
@@ -17,6 +17,19 @@ applyMiddlewares(app);
 const homeRoute = require('./routes/home');
 const residentRoute = require('./routes/resident');
 const invoiceRoute = require('./routes/invoice');
+
+//Database testing
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+
+app.get('/test-db', async (req, res) => {
+    try {
+        const users = await prisma.user.findMany();
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ error: 'Database connection failed' });
+    }
+});
 
 //Define application routes
 app.use('/', homeRoute);
