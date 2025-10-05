@@ -1,14 +1,19 @@
 const express = require('express');
+const { getInvoices, getInvoiceDetail, addInvoice, updateInvoice, deleteInvoice } = require('../controllers/invoiceController');
 const router = express.Router();
 
-//Route: lay danh sach hoa don
-router.get('/', (req, res) => {
-    res.send('Danh sach hoa don');
-});
+//Route: get all invoices
+router.get('/', getInvoices);
+//Route: get invoice detail
+router.get('/:id', getInvoiceDetail);
 
-//Route: them hoa don
-router.post('/create', () => {
-    res.send('Tao hoa don moi');
-});
+//Route: add a new invoice
+router.post('/add', addInvoice);
+
+//Route: update invoice
+router.put('/:id', updateInvoice);
+
+//Route: delete invoice
+router.delete('/:id', deleteInvoice);
 
 module.exports = router;

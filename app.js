@@ -36,7 +36,7 @@ app.use('/', homeRoute);
 app.use('/resident', residentRoute);
 app.use('/invoice', invoiceRoute);
 
-//Hanle errors
+//Handle errors
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({error: 'Internal Server Error'});
