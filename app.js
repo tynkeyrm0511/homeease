@@ -18,9 +18,11 @@ const homeRoute = require('./routes/home');
 const residentRoute = require('./routes/resident');
 const invoiceRoute = require('./routes/invoice');
 const requestRoute = require('./routes/request');
+const notificationRoute = require('./routes/notification');
 
 //Database testing
 const { PrismaClient } = require('@prisma/client');
+const { notification } = require('./prismaClient');
 const prisma = new PrismaClient();
 
 app.get('/test-db', async (req, res) => {
@@ -37,6 +39,7 @@ app.use('/', homeRoute);
 app.use('/resident', residentRoute);
 app.use('/invoice', invoiceRoute);
 app.use('/request', requestRoute);
+app.use('/notification', notificationRoute)
 
 //Handle errors
 app.use((err, req, res, next) => {
