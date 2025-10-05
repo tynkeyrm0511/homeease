@@ -17,6 +17,7 @@ applyMiddlewares(app);
 const homeRoute = require('./routes/home');
 const residentRoute = require('./routes/resident');
 const invoiceRoute = require('./routes/invoice');
+const requestRoute = require('./routes/request');
 
 //Database testing
 const { PrismaClient } = require('@prisma/client');
@@ -35,6 +36,7 @@ app.get('/test-db', async (req, res) => {
 app.use('/', homeRoute);
 app.use('/resident', residentRoute);
 app.use('/invoice', invoiceRoute);
+app.use('/request', requestRoute);
 
 //Handle errors
 app.use((err, req, res, next) => {
