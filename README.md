@@ -1,71 +1,113 @@
 # HomeEase - Apartment Management System
 
-HomeEase là ứng dụng web quản lý chung cư, giúp ban quản lý và cư dân thực hiện các nghiệp vụ hàng ngày một cách dễ dàng và hiệu quả.
+HomeEase là ứng dụng web quản lý chung cư, hỗ trợ ban quản lý và cư dân thực hiện các nghiệp vụ hàng ngày một cách hiệu quả.
 
 ## Chức năng chính
-- **Quản lý cư dân:** Thêm, sửa, xóa, xem thông tin cư dân.
-- **Quản lý hóa đơn:** Tạo, cập nhật, theo dõi trạng thái thanh toán hóa đơn hàng tháng cho từng căn hộ.
-- **Quản lý yêu cầu bảo trì:** Cư dân gửi yêu cầu bảo trì, ban quản lý tiếp nhận và xử lý.
-- **Thông báo:** Ban quản lý gửi thông báo, tin tức đến cư dân.
+- Quản lý cư dân (Resident): CRUD, xem chi tiết.
+- Quản lý hóa đơn (Invoice): CRUD, theo dõi trạng thái thanh toán.
+- Quản lý yêu cầu bảo trì (Request): CRUD, theo dõi tiến trình xử lý.
+- Thông báo (Notification): CRUD, gửi thông báo đến cư dân.
 
 ## Công nghệ sử dụng
-- **Backend:** Node.js, Express.js, Prisma ORM, PostgreSQL
-- **Frontend:** EJS (template engine), TailwindCSS, Vanilla JavaScript
-- **Dev Tools:** Nodemon, dotenv, morgan, helmet, cors
+- Backend: Node.js, Express.js, Prisma ORM, PostgreSQL  
+- Frontend: EJS, TailwindCSS, Vanilla JavaScript  
+- Dev tools: Nodemon, dotenv, morgan, helmet, cors
 
-## Kiến trúc dự án
+## Cấu trúc dự án
 ```
 homeease/
-├── controllers/       # Business logic for routes
+├── controllers/       # Business logic
 ├── routes/            # Route definitions
-├── views/             # EJS templates for frontend
-├── public/            # Static assets (CSS, JS, images)
-├── prisma/            # Prisma schema and migrations
-├── .env               # Environment variables
-├── app.js             # Main entry point
-└── package.json       # Project metadata and dependencies
+├── views/             # EJS templates
+├── public/            # Static assets
+├── prisma/            # Prisma schema & seed
+├── app.js             # App entry point
+└── package.json
 ```
 
-- **`app.js`**: Khởi tạo ứng dụng Express, áp dụng middleware, thiết lập routes.
-- **`routes/`**: Định nghĩa các route (home, resident, invoice...).
-- **`controllers/`**: Xử lý logic cho từng route.
-- **`prisma/schema.prisma`**: Định nghĩa cấu trúc cơ sở dữ liệu.
-
-## Hướng dẫn cài đặt & vận hành
-
-### 1. Cài đặt dependencies
+## Cài đặt & chạy
+1. Cài dependencies:
 ```bash
 npm install
 ```
-
-### 2. Chạy ứng dụng ở chế độ phát triển
-```bash
-npm run dev
+2. Thiết lập file `.env` (ví dụ):
 ```
-Truy cập tại địa chỉ: [http://localhost:3000](http://localhost:3000)
-
-### 3. Quản lý database với Prisma
-- Chỉnh sửa schema tại `prisma/schema.prisma`.
-- Chạy migration:
-  ```bash
-  npx prisma migrate dev --name <migration_name>
-  ```
-- Sinh Prisma client:
-  ```bash
-  npx prisma generate
-  ```
-
-## Biến môi trường mẫu (.env)
-```plaintext
 PORT=3000
 DATABASE_URL=postgresql://username:password@localhost:5432/homeease
 ```
+3. Migration & generate Prisma client:
+```bash
+npx prisma migrate dev --name init
+npx prisma generate
+```
+4. Seed dữ liệu (tùy chọn):
+```bash
+node prisma/seed.js
+```
+5. Chạy server:
+```bash
+npm run dev
+```
+Mở: http://localhost:3000
 
-## Lưu ý phát triển
-- Sử dụng Prisma cho mọi thao tác với database.
-- Middleware được áp dụng toàn cục trong `app.js`.
-- Tách biệt rõ ràng controller, route, view, public, prisma để dễ mở rộng và bảo trì.
+## API chính (tổng quan)
+- Resident: GET /resident, GET /resident/:id, POST /resident/add, PUT /resident/:id, DELETE /resident/:id  
+- Invoice: GET /invoice, GET /invoice/:id, POST /invoice/add, PUT /invoice/:id, DELETE /invoice/:id  
+- Request: GET /request, GET /request/:id, POST /request/add, PUT /request/:id, DELETE /request/:id  
+- Notification: GET /notification, GET /notification/:id, POST /notification/add, PUT /notification/:id, DELETE /notification/:id
+
+> Ghi chú: Dùng Postman/Thunder Client để test; các trường ngày tháng nên là ISO-8601 hoặc truyền về server dưới dạng chuỗi rồi controller chuyển thành `new Date()`.
+
+## Seed dữ liệu
+File seed: `prisma/seed.js` — tạo User, Invoice, Request, Notification giả bằng faker. Chạy `node prisma/seed.js` để seed.
+
+## Kiến trúc & quy ước
+- Tách rõ Route ↔ Controller ↔ View.  
+- Dùng Prisma cho mọi truy vấn DB.  
+- Middleware (morgan, cors, helmet, express.json) áp dụng toàn cục trong `app.js`.
+
+## Cập nhật tiến độ (progress)
+- ✅ Resident API: CRUD + detail — done, tested  
+- ✅ Invoice API: CRUD + detail — done, tested  
+- ✅ Request API: CRUD — done, tested  
+- ✅ Notification API: CRUD — done, tested  
+- ✅ Seed script: tạo dữ liệu cho tất cả bảng — done  
+- ✅ README: cập nhật — done  
+- 🔲 Frontend (EJS views) cho modules — pending  
+- 🔲 Mock payment QR/demo flow — pending  
+- 🔲 Tests & CI, deploy — pending  
+- 🔲 Đồng bộ Git (resolve divergence, push remote) — pending
+
+## Copilot / AI agent instructions (included)
+The following is guidance for AI coding agents working on this repository. Keep it in the README for contributor reference.
+
+- Project Overview
+  - HomeEase: Node.js web app for apartment management (Resident, Invoice, Request, Notification).
+  - Key Technologies: Express.js, Prisma, PostgreSQL, EJS, TailwindCSS.
+
+- Codebase Structure
+  - controllers/ — business logic
+  - routes/ — route definitions
+  - views/ — EJS templates
+  - public/ — static assets
+  - prisma/ — schema & migrations
+  - app.js — main entry point
+
+- Developer Workflows
+  - Install: `npm install`
+  - Run dev: `npm run dev`
+  - Migrations: `npx prisma migrate dev --name <migration_name>` then `npx prisma generate`
+
+- Conventions
+  - Use Prisma for all DB operations.
+  - Routes in `routes/` delegate to `controllers/`.
+  - Middleware applied globally in `app.js` (morgan, cors, helmet, express.json, express.urlencoded).
+
+- Notes for AI Agents
+  - Follow modular structure.
+  - Ask the user when choices are needed.
+  - Keep changes consistent with existing code style.
 
 ---
 
-Nếu bạn có thắc mắc hoặc cần hướng dẫn chi tiết, hãy liên hệ hoặc xem thêm tài liệu trong repo!
+If you want this Copilot section translated to Vietnamese or moved to a separate `CONTRIBUTING.md`, say so.
