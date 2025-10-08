@@ -1,4 +1,5 @@
 const prisma = require('../prismaClient');
+const { requestSchema } = require('../utils/validators');
 
 //Get all requests - GET
 const getRequests = async (req,res) => {
@@ -32,6 +33,14 @@ const getRequestDetail = async (req,res) => {
 //Add a new request - POST
 const addRequest = async (req,res) => {
     try {
+        //Validation request body
+        const { error } = requestSchema.validate(req.body);
+        if(error){
+            return res.status(400).json({
+                error: error.details[0].message
+            })
+        };
+
         const {
             description,
             status,

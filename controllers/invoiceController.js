@@ -1,4 +1,6 @@
+const { required } = require('joi');
 const prisma = require('../prismaClient');
+const { invoiceSchema } = require('../utils/validators.js')
 
 //Get all invoices - GET
 const getInvoices = async (req,res) => {
@@ -26,12 +28,23 @@ const getInvoiceDetail = async (req,res) => {
         }
         res.json(invoice)
     }catch(err){
-
+        console.error(err);
+        res.status(500).json({
+            error: 'Failed to fetch invoice detail'
+        })
     }
 }
 // Add a new invoice - POST
 const addInvoice = async (req,res) => {
     try {
+        //Validation request body
+        const { error } = invoiceSchema.validate(req.body);
+        if(error){
+            return res.status(400).json({
+                error: error.details[0].message
+            })
+        }
+        
         const {
             amount,
             dueDate,

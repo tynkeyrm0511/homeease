@@ -1,4 +1,5 @@
 const prisma = require('../prismaClient')
+const { notificationSchema } = require('../utils/validators')
 
 //Get all notifications - GET
 const getNotifications = async (req,res) => {
@@ -39,6 +40,14 @@ const getNotificationDetail = async (req,res) => {
 //Add a new notification - POST
 const addNotification = async (req,res) => {
     try {
+        //Validation request body
+        const { error } = notificationSchema.validate(req.body);
+        if(error){
+            return res.status(400).json({
+                error: error.details[0].message
+            })
+        };
+
         const {title, content, userId, target, createdAt} = req.body;
         const newNotification = await prisma.notification.create({
             data: {

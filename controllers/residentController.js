@@ -1,5 +1,5 @@
 const prisma = require('../prismaClient');
-
+const { residentSchema } = require('../utils/validators')
 //Get all residents - GET
 const getResidents = async (req,res) => {
     try{
@@ -31,6 +31,14 @@ const getResidentDetail = async (req,res) => {
 //Add a new resident - POST
 const addResident = async (req, res) => {
     try{
+        //Validate request body
+        const { error } = residentSchema.validate(req.body);
+        if(error){
+            return res.status(400).json({
+                error: error.details[0].message
+            })
+        };
+        
         const { 
             name, 
             email, 
@@ -43,6 +51,7 @@ const addResident = async (req, res) => {
             moveInDate, 
             status 
         } = req.body;
+
         //Conver date strings to JS Date objects
         const dob = dateOfBirth ? new Date(dateOfBirth) : null;
         const moveIn = moveInDate ? new Date(moveInDate) : null;
