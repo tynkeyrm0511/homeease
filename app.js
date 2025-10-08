@@ -19,6 +19,7 @@ const residentRoute = require('./routes/resident');
 const invoiceRoute = require('./routes/invoice');
 const requestRoute = require('./routes/request');
 const notificationRoute = require('./routes/notification');
+const authRoute = require('./routes/auth');
 
 //Database testing
 const { PrismaClient } = require('@prisma/client');
@@ -40,6 +41,7 @@ app.use('/resident', residentRoute);
 app.use('/invoice', invoiceRoute);
 app.use('/request', requestRoute);
 app.use('/notification', notificationRoute)
+app.use('/auth', authRoute)
 
 //Handle errors
 app.use((err, req, res, next) => {

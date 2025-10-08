@@ -1,19 +1,21 @@
 const express = require('express');
-const { getInvoices, getInvoiceDetail, addInvoice, updateInvoice, deleteInvoice } = require('../controllers/invoiceController');
 const router = express.Router();
+const { getInvoices, addInvoice, updateInvoice, deleteInvoice, getInvoiceDetail } = require('../controllers/invoiceController');
+const { authenticateToken, authorizeAdmin, authorizeSelfOrAdmin } = require('../middleware/authMiddleware');
 
-//Route: get all invoices
-router.get('/', getInvoices);
-//Route: get invoice detail
-router.get('/:id', getInvoiceDetail);
+// Admin: get all invoices
+router.get('/', authenticateToken, authorizeAdmin, getInvoices);
 
-//Route: add a new invoice
-router.post('/add', addInvoice);
+// Admin: add a new invoice
+router.post('/add', authenticateToken, authorizeAdmin, addInvoice);
 
-//Route: update invoice
-router.put('/:id', updateInvoice);
+// Admin: update invoice
+router.put('/:id', authenticateToken, authorizeAdmin, updateInvoice);
 
-//Route: delete invoice
-router.delete('/:id', deleteInvoice);
+// Admin: delete invoice
+router.delete('/:id', authenticateToken, authorizeAdmin, deleteInvoice);
+
+// Admin or resident: get invoice detail
+router.get('/:id', authenticateToken, authorizeSelfOrAdmin, getInvoiceDetail);
 
 module.exports = router;
