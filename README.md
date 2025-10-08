@@ -1,79 +1,146 @@
-# HomeEase - Apartment Management System
+# HomeEase - Hệ thống Quản lý Chung cư
 
-HomeEase là ứng dụng web quản lý chung cư, hỗ trợ ban quản lý và cư dân thực hiện các nghiệp vụ hàng ngày một cách hiệu quả.
+<p align="center">
+  <img src="https://via.placeholder.com/150?text=HomeEase" alt="HomeEase Logo" width="150" height="150">
+</p>
 
-## Chức năng chính
-- Quản lý cư dân (Resident): CRUD, xem chi tiết.
-- Quản lý hóa đơn (Invoice): CRUD, theo dõi trạng thái thanh toán.
-- Quản lý yêu cầu bảo trì (Request): CRUD, theo dõi tiến trình xử lý.
-- Thông báo (Notification): CRUD, gửi thông báo đến cư dân.
+HomeEase là một ứng dụng web quản lý chung cư được xây dựng bằng Node.js, giúp đơn giản hóa các quy trình quản lý chung cư và cải thiện trải nghiệm cho cư dân.
+
+## Tính năng
+
+- **Quản lý Cư dân**: Thêm, sửa, xóa, tra cứu thông tin cư dân
+- **Quản lý Hóa đơn**: Tạo, theo dõi và quản lý hóa đơn hàng tháng
+- **Yêu cầu Bảo trì**: Cho phép cư dân gửi yêu cầu bảo trì và theo dõi trạng thái
+- **Thông báo**: Gửi thông báo đến cư dân
+- **Xác thực & Phân quyền**: Hệ thống đăng nhập với JWT và phân quyền admin/resident
 
 ## Công nghệ sử dụng
-- Backend: Node.js, Express.js, Prisma ORM, PostgreSQL  
-- Frontend: EJS, TailwindCSS, Vanilla JavaScript  
-- Dev tools: Nodemon, dotenv, morgan, helmet, cors
+
+### Backend
+- **Express.js**: Framework web
+- **Prisma ORM**: Tương tác với database
+- **PostgreSQL**: Cơ sở dữ liệu
+- **JWT**: Xác thực người dùng
+- **Bcrypt**: Mã hóa mật khẩu
+- **Joi**: Validation dữ liệu
+
+### Frontend
+- **EJS**: Template engine
+- **TailwindCSS**: Framework CSS
+- **Vanilla JavaScript**: Xử lý tương tác người dùng
+
+### Development Tools
+- **Nodemon**: Tự động restart server khi có thay đổi
+- **dotenv**: Quản lý biến môi trường
+- **Morgan**: HTTP request logger
+- **Helmet**: Bảo mật HTTP headers
+- **Cors**: Cross-Origin Resource Sharing
 
 ## Cấu trúc dự án
+
 ```
 homeease/
-├── controllers/       # Business logic
-├── routes/            # Route definitions
+├── controllers/       # Xử lý logic nghiệp vụ
+├── middleware/        # Middleware ứng dụng
+├── prisma/            # Schema và migrations Prisma
+├── public/            # Static assets (CSS, JS, images)
+├── routes/            # Định nghĩa routes
+├── utils/             # Tiện ích (validators, helpers)
 ├── views/             # EJS templates
-├── public/            # Static assets
-├── prisma/            # Prisma schema & seed
-├── app.js             # App entry point
-└── package.json
+├── .env               # Biến môi trường
+├── .gitignore         # Git ignore file
+├── app.js             # Entry point
+├── package.json       # Project metadata
+└── README.md          # Thông tin dự án
 ```
 
-## Cài đặt & chạy
-1. Cài dependencies:
-```bash
-npm install
-```
-2. Thiết lập file `.env` (ví dụ):
-```
-PORT=3000
-DATABASE_URL=postgresql://username:password@localhost:5432/homeease
-```
-3. Migration & generate Prisma client:
-```bash
-npx prisma migrate dev --name init
-npx prisma generate
-```
-4. Seed dữ liệu (tùy chọn):
-```bash
-node prisma/seed.js
-```
-5. Chạy server:
-```bash
-npm run dev
-```
-Mở: http://localhost:3000
+## Cài đặt và chạy dự án
 
-## API chính (tổng quan)
-- Resident: GET /resident, GET /resident/:id, POST /resident/add, PUT /resident/:id, DELETE /resident/:id  
-- Invoice: GET /invoice, GET /invoice/:id, POST /invoice/add, PUT /invoice/:id, DELETE /invoice/:id  
-- Request: GET /request, GET /request/:id, POST /request/add, PUT /request/:id, DELETE /request/:id  
-- Notification: GET /notification, GET /notification/:id, POST /notification/add, PUT /notification/:id, DELETE /notification/:id
+### Yêu cầu
+- Node.js (>= 14.x)
+- PostgreSQL
+- npm hoặc yarn
 
-> Ghi chú: Dùng Postman/Thunder Client để test; các trường ngày tháng nên là ISO-8601 hoặc truyền về server dưới dạng chuỗi rồi controller chuyển thành `new Date()`.
+### Các bước cài đặt
 
-## Seed dữ liệu
-File seed: `prisma/seed.js` — tạo User, Invoice, Request, Notification giả bằng faker. Chạy `node prisma/seed.js` để seed.
+1. **Clone repository**
+   ```bash
+   git clone https://github.com/tynkeyrm0511/homeease.git
+   cd homeease
+   ```
 
-## Kiến trúc & quy ước
-- Tách rõ Route ↔ Controller ↔ View.  
-- Dùng Prisma cho mọi truy vấn DB.  
-- Middleware (morgan, cors, helmet, express.json) áp dụng toàn cục trong `app.js`.
+2. **Cài đặt dependencies**
+   ```bash
+   npm install
+   ```
 
-## Cập nhật tiến độ (progress)
-- ✅ Resident API: CRUD + detail — done, tested  
-- ✅ Invoice API: CRUD + detail — done, tested  
-- ✅ Request API: CRUD — done, tested  
-- ✅ Notification API: CRUD — done, tested  
-- ✅ Seed script: tạo dữ liệu cho tất cả bảng — done  
-- ✅ README: cập nhật — done  
-- 🔲 Frontend (EJS views) cho modules — pending  
-- 🔲 Mock payment QR/demo flow — pending  
-- 🔲 Tests & CI, deploy — pending  
-- 🔲 Đồng bộ Git (resolve divergence, push remote) — pending
+3. **Cấu hình biến môi trường**
+   - Copy `.env.example` thành `.env`
+   - Cập nhật biến DATABASE_URL và JWT_SECRET
+   ```
+   DATABASE_URL=postgresql://username:password@localhost:5432/homeease
+   JWT_SECRET=your_secret_key
+   ```
+
+4. **Khởi tạo database**
+   ```bash
+   npx prisma migrate dev --name init
+   npx prisma generate
+   ```
+
+5. **Chạy ứng dụng**
+   ```bash
+   npm run dev
+   ```
+
+6. **Truy cập ứng dụng**
+   ```
+   http://localhost:3000
+   ```
+
+## API Endpoints
+
+### Auth
+- `POST /auth/register` - Đăng ký người dùng mới
+- `POST /auth/login` - Đăng nhập và nhận JWT token
+
+### Resident
+- `GET /resident` - Lấy danh sách cư dân (Admin only)
+- `GET /resident/:id` - Lấy thông tin cư dân (Admin/Self only)
+- `POST /resident/add` - Thêm cư dân mới (Admin only)
+- `PUT /resident/:id` - Cập nhật thông tin cư dân (Admin only)
+- `DELETE /resident/:id` - Xóa cư dân (Admin only)
+
+### Invoice
+- `GET /invoice` - Lấy danh sách hóa đơn (Admin only)
+- `GET /invoice/:id` - Lấy chi tiết hóa đơn (Admin/Self only)
+- `POST /invoice/add` - Thêm hóa đơn mới (Admin only)
+- `PUT /invoice/:id` - Cập nhật hóa đơn (Admin only)
+- `DELETE /invoice/:id` - Xóa hóa đơn (Admin only)
+
+### Request
+- `GET /request` - Lấy danh sách yêu cầu bảo trì (Admin only)
+- `GET /request/:id` - Lấy chi tiết yêu cầu (Admin/Self only)
+- `POST /request/add` - Thêm yêu cầu mới (Admin only)
+- `PUT /request/:id` - Cập nhật yêu cầu (Admin only)
+- `DELETE /request/:id` - Xóa yêu cầu (Admin only)
+
+### Notification
+- `GET /notification` - Lấy danh sách thông báo (Admin only)
+- `GET /notification/:id` - Lấy chi tiết thông báo (Admin only)
+- `POST /notification/add` - Thêm thông báo mới (Admin only)
+- `PUT /notification/:id` - Cập nhật thông báo (Admin only)
+- `DELETE /notification/:id` - Xóa thông báo (Admin only)
+
+## Tính năng đã triển khai
+- ✅ Database schema với Prisma ORM
+- ✅ API CRUD cho tất cả modules
+- ✅ Validation với Joi
+- ✅ Authentication với JWT
+- ✅ Authorization (phân quyền admin/resident)
+
+## Tính năng đang phát triển
+- ⬜ Frontend với EJS & TailwindCSS
+- ⬜ Mock Payment QR system
+- ⬜ Unit Tests
+- ⬜ Email notifications
