@@ -1,21 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const { getResidents, addResident, updateResident, deleteResident, getResidentDetail } = require('../controllers/residentController');
-const { authenticateToken, authorizeAdmin, authorizeSelfOrAdmin } = require('../middleware/authMiddleware');
+const { authenticateToken, authorizeAdmin } = require('../middleware/authMiddleware');
 
-// Admin: get all residents
+// Get all residents route
 router.get('/', authenticateToken, authorizeAdmin, getResidents);
 
-// Admin: add a new resident
-router.post('/add', authenticateToken, authorizeAdmin, addResident);
-
-// Admin: update resident
+// Other routes
+router.post('/', authenticateToken, authorizeAdmin, addResident);
+router.get('/:id', authenticateToken, authorizeAdmin, getResidentDetail);
 router.put('/:id', authenticateToken, authorizeAdmin, updateResident);
-
-// Admin: delete resident
 router.delete('/:id', authenticateToken, authorizeAdmin, deleteResident);
-
-// Admin or resident: get resident detail
-router.get('/:id', authenticateToken, authorizeSelfOrAdmin, getResidentDetail);
 
 module.exports = router;

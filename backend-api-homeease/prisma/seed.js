@@ -1,5 +1,7 @@
 const { PrismaClient } = require('@prisma/client');
 const { faker } = require('@faker-js/faker');
+const bcrypt = require('bcryptjs');
+
 const prisma = new PrismaClient();
 
 async function main() {
@@ -9,21 +11,28 @@ async function main() {
     await prisma.invoice.deleteMany({});
     await prisma.user.deleteMany({});
 
+    // Tạo admin user
+    const adminPassword = await bcrypt.hash('password123', 10);
+    await prisma.user.create({
+        data: {
+            email: 'admin@homeease.com',
+            password: adminPassword,
+            name: 'Administrator',
+            role: 'admin'
+        }
+    });
+
     // Tạo 10 cư dân giả
     const residents = [];
     for (let i = 0; i < 10; i++) {
+        const hashedPassword = await bcrypt.hash('password123', 10);
         residents.push({
             name: faker.person.fullName(),
             email: faker.internet.email(),
-            password: faker.internet.password(),
-            role: 'resident',
-            phone: faker.phone.number(),
-            apartmentNumber: `A${faker.number.int({ min: 100, max: 999 })}`,
-            dateOfBirth: faker.date.birthdate({ min: 18, max: 80, mode: 'age' }),
-            gender: faker.person.sexType(),
-            address: faker.location.streetAddress(),
-            moveInDate: faker.date.past({ years: 5 }),
-            status: 'active'
+            password: hashedPassword,
+            role: 'resident'
+            // Chỉ tạo fields có trong User model
+            // Nếu cần thêm fields khác, update schema trước
         });
     }
     await prisma.user.createMany({ data: residents });
@@ -43,8 +52,6 @@ async function main() {
             dueDate: faker.date.future({ years: 1 }),
             isPaid: faker.datatype.boolean(),
             type: faker.helpers.arrayElement(['service', 'electricity', 'water', 'parking']),
-            createdAt: faker.date.recent({ days: 30 }),
-            paidAt: faker.datatype.boolean() ? faker.date.recent({ days: 10 }) : null,
             userId: resident.id
         });
     }
@@ -59,8 +66,6 @@ async function main() {
             status: faker.helpers.arrayElement(['pending', 'in_progress', 'completed', 'rejected']),
             category: faker.helpers.arrayElement(['electricity', 'water', 'cleaning', 'other']),
             priority: faker.helpers.arrayElement(['low', 'medium', 'high']),
-            createdAt: faker.date.recent({ days: 30 }),
-            updatedAt: faker.date.recent({ days: 5 }),
             userId: resident.id
         });
     }
@@ -73,12 +78,16 @@ async function main() {
         notifications.push({
             title: faker.lorem.words(5),
             content: faker.lorem.sentences(2),
-            createdAt: faker.date.recent({ days: 30 }),
             userId: resident.id,
             target: faker.helpers.arrayElement(['all', 'group', 'residentId'])
         });
     }
     await prisma.notification.createMany({ data: notifications });
+
+    console.log('Database seeded successfully!');
+    console.log('Admin login: admin@homeease.com / password123');
+    console.log('All residents use password: password123');
+    console.log(`Created ${residents.length} residents, ${invoices.length} invoices, ${requests.length} requests, ${notifications.length} notifications`);
 }
 
 main()

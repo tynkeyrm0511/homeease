@@ -117,4 +117,12 @@ const deleteInvoice = async (req,res) => {
         res.status(500).json({error: `Failed to delete invoice`})
     }
 }
-module.exports = {getInvoices, getInvoiceDetail, addInvoice, updateInvoice, deleteInvoice}
+
+// Mẫu export đúng
+module.exports = {
+  getInvoices,
+  getInvoiceDetail,
+  addInvoice,
+  updateInvoice,
+  deleteInvoice
+};

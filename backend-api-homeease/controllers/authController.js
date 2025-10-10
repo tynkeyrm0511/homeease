@@ -1,6 +1,9 @@
-const prisma = require('../prismaClient');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { PrismaClient } = require('@prisma/client');
+const crypto = require('crypto'); // Thêm crypto để tạo reset token
+
+const prisma = new PrismaClient();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -95,4 +98,139 @@ const login = async (req,res) => {
         })
     }
 }
-module.exports = { register, login }
+
+// Forgot Password - Gửi email với reset token
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email là bắt buộc' });
+    }
+
+    // Tìm user theo email
+    const user = await prisma.user.findUnique({
+      where: { email }
+    });
+
+    if (!user) {
+      // Không tiết lộ thông tin user không tồn tại để tránh email enumeration
+      return res.json({ message: 'Nếu email tồn tại, bạn sẽ nhận được hướng dẫn khôi phục mật khẩu' });
+    }
+
+    // Tạo reset token
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetTokenExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 phút
+
+    // Lưu reset token vào database
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        resetToken,
+        resetTokenExpiry
+      }
+    });
+
+    // Tạo reset link
+    const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:3001'}/reset-password?token=${resetToken}`;
+
+    // TODO: Gửi email với reset link
+    // Bạn có thể dùng nodemailer hoặc service khác
+    console.log('Reset link:', resetLink);
+
+    res.json({ 
+      message: 'Nếu email tồn tại, bạn sẽ nhận được hướng dẫn khôi phục mật khẩu',
+      // Trong development, trả về link để test
+      resetLink: process.env.NODE_ENV === 'development' ? resetLink : undefined
+    });
+
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.status(500).json({ message: 'Có lỗi xảy ra' });
+  }
+};
+
+// Reset Password - Cập nhật mật khẩu mới
+const resetPassword = async (req, res) => {
+  try {
+    const { token, password } = req.body;
+
+    if (!token || !password) {
+      return res.status(400).json({ message: 'Token và mật khẩu là bắt buộc' });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ message: 'Mật khẩu phải có ít nhất 6 ký tự' });
+    }
+
+    // Tìm user theo reset token
+    const user = await prisma.user.findFirst({
+      where: {
+        resetToken: token,
+        resetTokenExpiry: {
+          gt: new Date() // Token chưa hết hạn
+        }
+      }
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Token không hợp lệ hoặc đã hết hạn' });
+    }
+
+    // Hash mật khẩu mới
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Cập nhật mật khẩu và xóa reset token
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetToken: null,
+        resetTokenExpiry: null
+      }
+    });
+
+    res.json({ message: 'Mật khẩu đã được cập nhật thành công' });
+
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({ message: 'Có lỗi xảy ra' });
+  }
+};
+
+// Verify Token (optional - để check token validity)
+const verifyToken = async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    
+    if (!token) {
+      return res.status(401).json({ message: 'Token không được cung cấp' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Sửa: Dùng decoded.userId thay vì decoded.id (vì token chứa userId)
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.userId },  // Thay đổi từ decoded.id thành decoded.userId
+      select: { id: true, email: true, name: true, role: true }
+    });
+
+    if (!user) {
+      return res.status(401).json({ message: 'User không tồn tại' });
+    }
+
+    res.json({ user });
+
+  } catch (error) {
+    console.error('Verify token error:', error);
+    res.status(401).json({ message: 'Token không hợp lệ' });
+  }
+};
+
+module.exports = {
+  login,
+  register,
+  forgotPassword,
+  resetPassword,
+  verifyToken
+};
