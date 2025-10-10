@@ -66,8 +66,11 @@ homeease/
   - [x] API endpoints structure
 
 ### 🔄 Đang phát triển
-- [ ] **Quản lý cư dân**
-  - [ ] CRUD operations cho residents
+- [x] **Quản lý cư dân**
+  - [x] Hiển thị danh sách residents (Read)
+  - [ ] Thêm cư dân mới (Create)
+  - [ ] Sửa thông tin cư dân (Update)
+  - [ ] Xóa cư dân (Delete)
   - [ ] Import/Export data
   - [ ] Search và filter
 
@@ -135,7 +138,7 @@ PORT=3000
 ### Phase 2: Core Components 🔄 (Đang làm)
 - [ ] Reusable UI components (Card, Button, Modal, etc.)
 - [ ] Dashboard overview với stats
-- [ ] Resident management interface
+- [x] Resident management interface: Hiển thị danh sách cư dân
 - [ ] Request management system
 - [ ] Invoice management interface
 

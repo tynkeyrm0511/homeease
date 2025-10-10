@@ -27,7 +27,7 @@ const ResidentsList = () => {
 
   return (
     <div className="container-xl px-4 py-4">
-      <h4 className="mb-3 fw-semibold">Danh sách Cư dân</h4>
+      <h4 className="mb-3 fw-semibold">DANH SÁCH CƯ DÂN</h4>
       <div className="card border-0 shadow-sm">
         <div className="card-body">
           {residents.length === 0 ? (
