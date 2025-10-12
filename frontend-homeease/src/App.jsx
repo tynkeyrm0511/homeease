@@ -5,6 +5,7 @@ import Login from './components/Auth/Login';
 import Dashboard from './components/Dashboard';
 import ResidentsList from './components/Residents/ResidentsList';
 import Header from './components/Header';
+import InvoiceList from './components/Invoices/InvoiceList';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './App.css';
@@ -21,6 +22,7 @@ function App() {
 
 function AppContent() {
   const [currentView, setCurrentView] = useState('dashboard');
+  const [selectedResidentId, setSelectedResidentId] = useState(null);
   const { user, loading } = useAuth();
 
   // Show loading while checking authentication
@@ -43,9 +45,12 @@ function AppContent() {
       <Header setCurrentView={setCurrentView} />
       <div className="container-fluid mt-4">
         {currentView === 'dashboard' && <Dashboard />}
-        {currentView === 'residents' && <ResidentsList />}
+        {currentView === 'residents' && <ResidentsList selectedResidentId={selectedResidentId} />}
         {currentView === 'requests' && <div className="p-4">Yêu cầu đang được phát triển...</div>}
-        {currentView === 'invoices' && <div className="p-4">Hóa đơn đang được phát triển...</div>}
+        {currentView === 'invoices' && <InvoiceList onShowResidentDetail={(residentId) => {
+          setSelectedResidentId(residentId);
+          setCurrentView('residents');
+        }} />}
         {currentView === 'notifications' && <div className="p-4">Thông báo đang được phát triển...</div>}
       </div>
     </>

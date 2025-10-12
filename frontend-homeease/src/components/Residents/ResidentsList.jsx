@@ -1,6 +1,6 @@
 // src/components/Residents/ResidentsList.jsx
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, message } from 'antd';
+import { Modal, Button, message, Input, Tag } from 'antd';
 import ResidentTable from './components/ResidentTable';
 import ResidentForm from './components/ResidentForm';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
@@ -9,8 +9,9 @@ import 'antd/dist/reset.css';
 import { getResidents, createResident } from '../../services/api';
 import api from '../../services/api';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ResidentDetail from './ResidentDetail';
 
-const ResidentsList = () => {
+const ResidentsList = ({ selectedResidentId }) => {
   // State cho modal xác nhận xóa
   const [deleteResident, setDeleteResident] = useState(null);
   const [deleteInvoiceCount, setDeleteInvoiceCount] = useState(0);
@@ -27,8 +28,21 @@ const ResidentsList = () => {
   const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [newResident, setNewResident] = useState({ name: '', email: '', password: '', role: 'resident' });
+  const [detailResidentId, setDetailResidentId] = useState(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const totalPages = Math.ceil(residents.length / residentsPerPage);
-  const paginatedResidents = residents.slice(
+
+  // Filter residents by search text
+  const filteredResidents = residents.filter(r => {
+    const text = searchText.toLowerCase();
+    return (
+      r.name?.toLowerCase().includes(text) ||
+      r.email?.toLowerCase().includes(text) ||
+      r.apartmentNumber?.toLowerCase().includes(text)
+    );
+  });
+  const paginatedResidents = filteredResidents.slice(
     (currentPage - 1) * residentsPerPage,
     currentPage * residentsPerPage
   );
@@ -61,12 +75,26 @@ const ResidentsList = () => {
     fetchResidents();
   }, []);
 
+  useEffect(() => {
+    if (selectedResidentId) {
+      setDetailResidentId(selectedResidentId);
+      setShowDetailModal(true);
+    }
+  }, [selectedResidentId]);
+
   if (loading) return <div>Loading...</div>; // Hiển thị loading
   if (error) return <div className="alert alert-danger">{error}</div>; // Hiển thị lỗi
   return (
   <div style={{ marginTop: 40, maxWidth: 1200, minHeight: '100vh', marginLeft: 'auto', marginRight: 'auto', width: '100%' }}>
       <h4 className="mb-3 fw-bold" style={{ fontSize: 22 }}>DANH SÁCH CƯ DÂN</h4>
-      <Button type="primary" style={{ marginBottom: 12 }} onClick={() => setShowForm(true)}>
+      <Input.Search
+        placeholder="Tìm kiếm theo tên, email, số căn hộ..."
+        allowClear
+        value={searchText}
+        onChange={e => setSearchText(e.target.value)}
+        style={{ maxWidth: 350, marginBottom: 16 }}
+      />
+      <Button type="primary" style={{ marginBottom: 12, marginLeft: 8 }} onClick={() => setShowForm(true)}>
         Thêm dân cư
       </Button>
       {showForm && (
@@ -101,7 +129,7 @@ const ResidentsList = () => {
       )}
 
       <div>
-        {residents.length === 0 ? (
+        {filteredResidents.length === 0 ? (
           <p>Không có cư dân nào.</p>
         ) : (
           <div style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.07)', borderRadius: 10, background: '#fff', padding: 24, overflowX: 'auto' }}>
@@ -123,19 +151,33 @@ const ResidentsList = () => {
                   console.error(err);
                 }
               }}
+              onDetail={(resident) => {
+                setDetailResidentId(resident.id);
+                setShowDetailModal(true);
+              }}
+              renderStatus={(status) => (
+                status === 'active' ? <span style={{display:'inline-block',width:12,height:12,borderRadius:'50%',background:'#52c41a'}} /> : <span style={{display:'inline-block',width:12,height:12,borderRadius:'50%',background:'#ff4d4f'}} />
+              )}
             />
             {/* Pagination controls */}
             {totalPages > 1 && (
                 <PaginationControl
                   current={currentPage}
                   pageSize={residentsPerPage}
-                  total={residents.length}
+                  total={filteredResidents.length}
                   onChange={setCurrentPage}
                 />
             )}
           </div>
         )}
       </div>
+
+      {/* Resident Detail Modal */}
+      <ResidentDetail
+        residentId={detailResidentId}
+        visible={showDetailModal}
+        onClose={() => setShowDetailModal(false)}
+      />
 
       {/* Delete confirmation modal */}
       <ConfirmDeleteModal
@@ -195,7 +237,18 @@ const ResidentsList = () => {
                     name: values.name,
                     email: values.email,
                     role: values.role,
+                    phone: values.phone,
+                    apartmentNumber: values.apartmentNumber,
+                    gender: values.gender,
+                    address: values.address,
+                    status: values.status,
                   };
+                  if (values.dateOfBirth) {
+                    updateData.dateOfBirth = values.dateOfBirth.format ? values.dateOfBirth.format('YYYY-MM-DD') : values.dateOfBirth;
+                  }
+                  if (values.moveInDate) {
+                    updateData.moveInDate = values.moveInDate.format ? values.moveInDate.format('YYYY-MM-DD') : values.moveInDate;
+                  }
                   if (values.password && values.password.length >= 6) {
                     updateData.password = values.password;
                   }

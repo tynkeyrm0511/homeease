@@ -60,4 +60,9 @@ export const deleteResident = (id) => {
   return api.delete(`/resident/${id}`);
 };
 
+// Invoice API
+export const getInvoices = () => {
+  return api.get('/invoice').then(res => res.data);
+};
+
 export default api;
