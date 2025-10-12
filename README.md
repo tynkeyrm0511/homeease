@@ -84,39 +84,51 @@ homeease/
     └── public/
 ```
 
-## � Tiến độ dự án
+## 📊 Tiến độ dự án
 
-### Phase 1: Nền tảng & Layout ✅ (Hoàn thành)
+### Backend ✅ (Hoàn thành)
+- [x] API cho quản lý cư dân
+- [x] API cho quản lý yêu cầu dịch vụ
+- [x] API cho quản lý hóa đơn
+- [x] API cho quản lý thông báo
+- [x] Authentication & Authorization
+- [x] Validation middleware
+- [x] Database schema & migrations
+- [x] Error handling
+
+### Frontend 🔄 (Đang làm)
+
+#### Phase 1: Nền tảng & Layout ✅ (Hoàn thành)
 - [x] Thiết lập cấu trúc dự án
 - [x] Hệ thống CSS & theme
 - [x] Header component với navigation
 - [x] App layout với routing
 - [x] Dashboard layout
 
-### Phase 2: Core Components 🔄 (Đang làm)
+#### Phase 2: Core Components 🔄 (Đang làm)
 - [x] Quản lý cư dân: CRUD, phân trang
 - [ ] Quản lý yêu cầu dịch vụ
 - [ ] Quản lý hóa đơn
 - [ ] Thông báo
 
-### Phase 3: Tích hợp dữ liệu
+#### Phase 3: Tích hợp dữ liệu
 - [x] Thiết lập API service
 - [x] Kết nối với backend API
 - [x] Quản lý trạng thái (Context API)
 - [ ] Cập nhật real-time
 
-### Phase 4: Tính năng nâng cao
+#### Phase 4: Tính năng nâng cao
 - [x] Xác thực & Phân quyền
 - [ ] Hệ thống thông báo
 - [ ] Biểu đồ & thống kê
 - [ ] Tối ưu responsive
 
-### Phase 5: Hoàn thiện & Triển khai
+#### Phase 5: Hoàn thiện & Triển khai
 - [ ] Cải thiện UI/UX
 - [ ] Kiểm thử
 - [ ] Build & deploy
 
-## �📮 Liên hệ
+## 📮 Liên hệ
 
 - Email: hoangnguyen.dev2003@gmail.com
 - GitHub: [https://github.com/tynkeyrm0511/homeease](https://github.com/tynkeyrm0511/homeease)
@@ -124,3 +136,4 @@ homeease/
 ---
 
 HomeEase Team © 2025
+
