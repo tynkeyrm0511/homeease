@@ -1,6 +1,6 @@
 // src/components/Residents/ResidentsList.jsx
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, message, Input, Tag } from 'antd';
+import { Modal, Button, message, Input, Tag, Spin } from 'antd';
 import ResidentTable from './components/ResidentTable';
 import ResidentForm from './components/ResidentForm';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
@@ -31,6 +31,7 @@ const ResidentsList = ({ selectedResidentId }) => {
   const [detailResidentId, setDetailResidentId] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [pageLoading, setPageLoading] = useState(false);
   const totalPages = Math.ceil(residents.length / residentsPerPage);
 
   // Filter residents by search text
@@ -82,10 +83,19 @@ const ResidentsList = ({ selectedResidentId }) => {
     }
   }, [selectedResidentId]);
 
+  // Khi đổi trang, hiển thị loading ngắn
+  const handlePageChange = (page) => {
+    setPageLoading(true);
+    setTimeout(() => {
+      setCurrentPage(page);
+      setPageLoading(false);
+    }, 400); // loading 400ms cho cảm giác mượt
+  };
+
   if (loading) return <div>Loading...</div>; // Hiển thị loading
   if (error) return <div className="alert alert-danger">{error}</div>; // Hiển thị lỗi
   return (
-  <div style={{ marginTop: 40, maxWidth: 1200, minHeight: '100vh', marginLeft: 'auto', marginRight: 'auto', width: '100%' }}>
+    <div style={{ marginTop: 40, maxWidth: 1200, minHeight: '100vh', marginLeft: 'auto', marginRight: 'auto', width: '100%' }}>
       <h4 className="mb-3 fw-bold" style={{ fontSize: 22 }}>DANH SÁCH CƯ DÂN</h4>
       <Input.Search
         placeholder="Tìm kiếm theo tên, email, số căn hộ..."
@@ -132,7 +142,23 @@ const ResidentsList = ({ selectedResidentId }) => {
         {filteredResidents.length === 0 ? (
           <p>Không có cư dân nào.</p>
         ) : (
-          <div style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.07)', borderRadius: 10, background: '#fff', padding: 24, overflowX: 'auto' }}>
+          <div style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.07)', borderRadius: 10, background: '#fff', padding: 24, overflowX: 'auto', position: 'relative', minHeight: 200 }}>
+            {pageLoading && (
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                background: 'rgba(255,255,255,0.6)',
+                zIndex: 10,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+                <Spin size="large" />
+              </div>
+            )}
             <ResidentTable
               residents={paginatedResidents}
               onEdit={setEditResident}
@@ -165,7 +191,7 @@ const ResidentsList = ({ selectedResidentId }) => {
                   current={currentPage}
                   pageSize={residentsPerPage}
                   total={filteredResidents.length}
-                  onChange={setCurrentPage}
+                  onChange={handlePageChange}
                 />
             )}
           </div>
