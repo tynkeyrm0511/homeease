@@ -65,4 +65,19 @@ export const getInvoices = () => {
   return api.get('/invoice').then(res => res.data);
 };
 
+// Thêm hóa đơn
+export const createInvoice = (invoiceData) => {
+  return api.post('/invoice', invoiceData).then(res => res.data);
+};
+
+// Sửa hóa đơn
+export const updateInvoice = (id, invoiceData) => {
+  return api.put(`/invoice/${id}`, invoiceData).then(res => res.data);
+};
+
+// Xóa hóa đơn
+export const deleteInvoice = (id) => {
+  return api.delete(`/invoice/${id}`).then(res => res.data);
+};
+
 export default api;

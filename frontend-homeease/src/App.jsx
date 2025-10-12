@@ -7,8 +7,10 @@ import ResidentsList from './components/Residents/ResidentsList';
 import Header from './components/Header';
 import InvoiceList from './components/Invoices/InvoiceList';
 import { Spin } from 'antd';
+import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
 function App() {
@@ -16,6 +18,7 @@ function App() {
     <AuthProvider>
       <Router>
         <AppContent />
+        <ToastContainer position="top-right" autoClose={2500} hideProgressBar={false} newestOnTop closeOnClick pauseOnFocusLoss draggable pauseOnHover />
       </Router>
     </AuthProvider>
   );

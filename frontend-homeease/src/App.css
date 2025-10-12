@@ -1,4 +1,11 @@
-/* Modern Indigo/Cyan theme for HomeEase */
+:root {
+}
+
+.invoice-row-padding {
+  height: 100%;
+  padding-top: 3px !important;
+  padding-bottom: 3px !important;
+}
 :root {
   --primary: #3f51b5;
   --primary-hover: #283593;

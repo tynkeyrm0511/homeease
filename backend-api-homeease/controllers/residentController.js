@@ -57,6 +57,15 @@ const addResident = async (req, res) => {
             status 
         } = req.body;
 
+        // Mã hóa mật khẩu khi tạo mới
+        let hashedPassword = '';
+        if (typeof password === 'string' && password.length >= 6) {
+            const salt = await bcrypt.genSalt(10);
+            hashedPassword = await bcrypt.hash(password, salt);
+        } else {
+            return res.status(400).json({ error: 'Mật khẩu tối thiểu 6 ký tự!' });
+        }
+
         //Conver date strings to JS Date objects
         const dob = dateOfBirth ? new Date(dateOfBirth) : null;
         const moveIn = moveInDate ? new Date(moveInDate) : null;
@@ -64,7 +73,7 @@ const addResident = async (req, res) => {
             data: {
                 name,
                 email,
-                password,
+                password: hashedPassword,
                 phone,
                 apartmentNumber,
                 dateOfBirth: dob,
@@ -115,11 +124,13 @@ const updateResident = async (req,res) => {
             moveInDate: moveIn,
             status
         };
+        // Nếu password truyền lên là chuỗi >= 6 thì mã hóa và cập nhật, nếu để trống thì giữ nguyên
         if (typeof password === 'string' && password.length >= 6) {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
             updateData.password = hashedPassword;
         }
+        // Nếu password là chuỗi rỗng hoặc không truyền thì không cập nhật password (giữ nguyên)
         if (role) {
             updateData.role = role;
         }

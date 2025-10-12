@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from 'antd';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const StatusDot = ({ color }) => (
   <span style={{
@@ -46,13 +47,9 @@ const ResidentTable = ({ residents, onEdit, onDelete, onDetail, renderStatus }) 
             </div>
           </td>
           <td style={{ verticalAlign: 'middle' }}>
-            <div className="resident-action-group">
-              <Button type="default" className="resident-action-btn edit-btn" onClick={() => onEdit(resident)}>
-                Sửa
-              </Button>
-              <Button type="primary" danger className="resident-action-btn delete-btn" onClick={() => onDelete(resident)}>
-                Xóa
-              </Button>
+            <div className="resident-action-group" style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
+              <Button type="text" icon={<EditOutlined />} onClick={() => onEdit(resident)} />
+              <Button type="text" danger icon={<DeleteOutlined />} onClick={() => onDelete(resident)} />
             </div>
           </td>
         </tr>
