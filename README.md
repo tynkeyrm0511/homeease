@@ -108,13 +108,14 @@ homeease/
 #### Phase 2: Core Components 🔄 (Đang làm)
 - [x] Quản lý cư dân: CRUD, phân trang
 - [ ] Quản lý yêu cầu dịch vụ
-- [ ] Quản lý hóa đơn
+- [x] Quản lý hóa đơn: CRUD, phân trang, trạng thái, toast, liên kết popup cư dân
 - [ ] Thông báo
 
 #### Phase 3: Tích hợp dữ liệu
 - [x] Thiết lập API service
 - [x] Kết nối với backend API
 - [x] Quản lý trạng thái (Context API)
+- [x] Tích hợp lưu hóa đơn vào CSDL qua API
 - [ ] Cập nhật real-time
 
 #### Phase 4: Tính năng nâng cao
