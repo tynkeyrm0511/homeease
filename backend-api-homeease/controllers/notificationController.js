@@ -4,10 +4,13 @@ const { notificationSchema } = require('../utils/validators')
 //Get all notifications - GET
 const getNotifications = async (req,res) => {
     try {
+        const { userId } = req.query;
+        const where = userId ? { userId: Number(userId) } : {};
         const notification = await prisma.notification.findMany({
+            where,
             include: { user: true }
         });
-        res.json({notification});
+        res.json(notification);
     } catch (err) {
         console.error(err);
         res.status(500).json({

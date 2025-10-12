@@ -1,3 +1,234 @@
+/* Modern Indigo/Cyan theme for HomeEase */
+:root {
+  --primary: #3f51b5;
+  --primary-hover: #283593;
+  --secondary: #00bcd4;
+  --background: #f4f6fb;
+  --surface: #fff;
+  --text-main: #222;
+  --text-sub: #5f6368;
+  --success: #43a047;
+  --warning: #ffb300;
+  --danger: #e53935;
+  --info: #0288d1;
+  --border: #e0e3e7;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--background);
+  color: var(--text-main);
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+a:hover {
+  color: var(--primary-hover);
+}
+
+.btn-primary, .ant-btn-primary {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: #fff !important;
+}
+.btn-primary:hover, .ant-btn-primary:hover {
+  background: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
+}
+.btn-secondary {
+  background: var(--secondary) !important;
+  border-color: var(--secondary) !important;
+  color: #fff !important;
+}
+.btn-success, .ant-btn-success {
+  background: var(--success) !important;
+  border-color: var(--success) !important;
+  color: #fff !important;
+}
+.btn-warning, .ant-btn-warning {
+  background: var(--warning) !important;
+  border-color: var(--warning) !important;
+  color: #fff !important;
+}
+.btn-danger, .ant-btn-danger {
+  background: var(--danger) !important;
+  border-color: var(--danger) !important;
+  color: #fff !important;
+}
+
+.card, .modal-content, .ant-card, .ant-modal-content, .table, .ant-table {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+}
+
+.text-success { color: var(--success) !important; }
+.text-warning { color: var(--warning) !important; }
+.text-danger { color: var(--danger) !important; }
+.text-info { color: var(--info) !important; }
+.text-sub { color: var(--text-sub) !important; }
+
+.border { border-color: var(--border) !important; }
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Force center alignment */
+.container-xl {
+  max-width: 1200px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 1.5rem !important;
+  padding-right: 1.5rem !important;
+}
+
+/* Ensure full width containers */
+.navbar {
+  width: 100% !important;
+}
+/* App Header theme */
+.app-header {
+  background: var(--primary);
+  color: #fff;
+}
+.app-header .fw-bold,
+.app-header .header-menu-btn,
+.app-header .header-user-btn,
+.app-header .header-menu-btn span,
+.app-header .header-user-btn span {
+  color: #fff !important;
+}
+.app-header .header-menu-btn.ant-btn-link {
+  color: #fff !important;
+  font-weight: 500;
+  font-size: 1rem;
+  margin: 0 8px;
+  padding: 0 10px;
+  border-radius: 4px;
+  transition: background 0.2s, color 0.2s;
+}
+.app-header .header-menu-btn.ant-btn-link:hover,
+.app-header .header-menu-btn.ant-btn-link:focus {
+  background: var(--primary-hover);
+  color: #fff !important;
+}
+.app-header .header-user-btn .rounded-circle {
+  background: var(--secondary) !important;
+  color: #fff !important;
+}
+.resident-table td:last-child {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+/* Responsive resident table and action group */
+.resident-table {
+  min-width: 900px;
+}
+.resident-table tbody tr {
+  transition: background 0.2s;
+}
+.resident-table tbody tr:hover {
+  background: #f5f7fa;
+  cursor: pointer;
+}
+.resident-action-group {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+@media (max-width: 900px) {
+  .resident-table {
+    min-width: 600px;
+  }
+}
+/* Pagination Ant Design theme override */
+.ant-pagination-item-active {
+  border-color: var(--primary) !important;
+}
+.ant-pagination-item-active a {
+  color: var(--primary) !important;
+}
+.ant-pagination-item-active:focus,
+.ant-pagination-item-active:active,
+.ant-pagination-item-active:hover {
+  border-color: var(--primary-hover) !important;
+}
+/* Nút hành động cho ResidentsList */
+.resident-action-btn {
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  font-size: 0.92rem;
+  border-radius: 6px;
+  padding: 2px 12px;
+  box-shadow: none;
+}
+/* Modal Popup Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.3);
+  z-index: 1100;
+}
+
+.modal-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1101;
+  min-width: 350px;
+  max-width: 400px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #888;
+  position: absolute;
+  top: 18px;
+  right: 18px;
+}
 /* Reset and base styles */
 * {
   margin: 0;
@@ -36,8 +267,8 @@ html, body {
 /* Custom styles for HomeEase */
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: #f8f9fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--background);
 }
 
 .navbar .nav-link {

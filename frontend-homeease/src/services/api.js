@@ -42,11 +42,22 @@ api.interceptors.response.use(
 
 // Residents API
 export const getResidents = () => {
-  return api.get('/resident'); // Đổi từ /residents thành /resident
+  return api.get('/resident');
 };
 
 export const getResidentById = (id) => {
-  return api.get(`/resident/${id}`); // Đổi từ /residents thành /resident
+  return api.get(`/resident/${id}`);
+};
+
+
+// Thêm cư dân mới
+export const createResident = (residentData) => {
+  return api.post('/resident', residentData);
+};
+
+// Xóa cư dân
+export const deleteResident = (id) => {
+  return api.delete(`/resident/${id}`);
 };
 
 export default api;

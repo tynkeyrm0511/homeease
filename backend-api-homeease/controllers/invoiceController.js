@@ -5,7 +5,13 @@ const { invoiceSchema } = require('../utils/validators.js')
 //Get all invoices - GET
 const getInvoices = async (req,res) => {
     try{
+        const { userId } = req.query;
+        let where = {};
+        if (userId) {
+            where.userId = Number(userId);
+        }
         const invoices = await prisma.invoice.findMany({
+            where,
             include: { user: true}
         });
         res.json(invoices);

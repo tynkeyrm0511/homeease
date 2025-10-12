@@ -1,17 +1,56 @@
 // src/components/Residents/ResidentsList.jsx
-import { useState, useEffect } from 'react';
-import { getResidents } from '../../services/api';
+import React, { useState, useEffect } from 'react';
+import { Modal, Button, message } from 'antd';
+import ResidentTable from './components/ResidentTable';
+import ResidentForm from './components/ResidentForm';
+import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
+import PaginationControl from '../common/PaginationControl';
+import 'antd/dist/reset.css';
+import { getResidents, createResident } from '../../services/api';
+import api from '../../services/api';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ResidentsList = () => {
+  // State cho modal xác nhận xóa
+  const [deleteResident, setDeleteResident] = useState(null);
+  const [deleteInvoiceCount, setDeleteInvoiceCount] = useState(0);
+  const [deleteRequestCount, setDeleteRequestCount] = useState(0);
+  const [deleteNotificationCount, setDeleteNotificationCount] = useState(0);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [residents, setResidents] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const residentsPerPage = 10;
+  const [editResident, setEditResident] = useState(null);
+  const [editForm, setEditForm] = useState({ name: '', email: '', role: 'resident', password: '' });
+  // Xóa khai báo setEditError vì không dùng, tránh lỗi
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showForm, setShowForm] = useState(false);
+  const [newResident, setNewResident] = useState({ name: '', email: '', password: '', role: 'resident' });
+  const totalPages = Math.ceil(residents.length / residentsPerPage);
+  const paginatedResidents = residents.slice(
+    (currentPage - 1) * residentsPerPage,
+    currentPage * residentsPerPage
+  );
+
+  useEffect(() => {
+    if (editResident) {
+      setEditForm({
+        name: editResident.name || '',
+        email: editResident.email || '',
+        role: editResident.role || 'resident',
+        password: ''
+      });
+    }
+  }, [editResident]);
 
   useEffect(() => {
     const fetchResidents = async () => {
       try {
-        const response = await getResidents();
-        setResidents(response.data);
+          const response = await getResidents();
+          // Sắp xếp cư dân theo id tăng dần để đảm bảo thứ tự luôn đúng
+          const sortedResidents = response.data.sort((a, b) => a.id - b.id);
+          setResidents(sortedResidents);
       } catch (err) {
         setError('Không thể tải danh sách cư dân');
         console.error(err);
@@ -22,42 +61,161 @@ const ResidentsList = () => {
     fetchResidents();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div className="alert alert-danger">{error}</div>;
-
+  if (loading) return <div>Loading...</div>; // Hiển thị loading
+  if (error) return <div className="alert alert-danger">{error}</div>; // Hiển thị lỗi
   return (
-    <div className="container-xl px-4 py-4">
-      <h4 className="mb-3 fw-semibold">DANH SÁCH CƯ DÂN</h4>
-      <div className="card border-0 shadow-sm">
-        <div className="card-body">
-          {residents.length === 0 ? (
-            <p>Không có cư dân nào.</p>
-          ) : (
-            <table className="table table-hover">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Tên</th>
-                  <th>Email</th>
-                  <th>Vai trò</th>
-                </tr>
-              </thead>
-              <tbody>
-                {residents.map((resident) => (
-                  <tr key={resident.id}>
-                    <td>{resident.id}</td>
-                    <td>{resident.name}</td>
-                    <td>{resident.email}</td>
-                    <td>{resident.role}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+  <div style={{ marginTop: 40, maxWidth: 1200, minHeight: '100vh', marginLeft: 'auto', marginRight: 'auto', width: '100%' }}>
+      <h4 className="mb-3 fw-bold" style={{ fontSize: 22 }}>DANH SÁCH CƯ DÂN</h4>
+      <Button type="primary" style={{ marginBottom: 12 }} onClick={() => setShowForm(true)}>
+        Thêm dân cư
+      </Button>
+      {showForm && (
+          <Modal
+            title="THÊM DÂN CƯ MỚI"
+            open={showForm}
+            onCancel={() => setShowForm(false)}
+            footer={null}
+          >
+            <ResidentForm
+              initialValues={newResident}
+              type="add"
+              onFinish={async (values) => {
+                try {
+                  await createResident(values);
+                  setLoading(true);
+                  message.success('Thêm cư dân thành công!');
+                  const response = await getResidents();
+                  const sortedResidents = response.data.sort((a, b) => a.id - b.id);
+                  setResidents(sortedResidents);
+                  setLoading(false);
+                  setShowForm(false);
+                  setNewResident({ name: '', email: '', password: '', role: 'resident' });
+                } catch (err) {
+                  message.error('Thêm cư dân thất bại!');
+                  console.error(err);
+                }
+              }}
+              onCancel={() => setShowForm(false)}
+            />
+          </Modal>
+      )}
+
+      <div>
+        {residents.length === 0 ? (
+          <p>Không có cư dân nào.</p>
+        ) : (
+          <div style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.07)', borderRadius: 10, background: '#fff', padding: 24, overflowX: 'auto' }}>
+            <ResidentTable
+              residents={paginatedResidents}
+              onEdit={setEditResident}
+              onDelete={async (resident) => {
+                try {
+                  const invoiceRes = await api.get(`/invoice?userId=${resident.id}`);
+                  const requestRes = await api.get(`/request?userId=${resident.id}`);
+                  const notificationRes = await api.get(`/notification?userId=${resident.id}`);
+                  setDeleteResident(resident);
+                  setDeleteInvoiceCount(Array.isArray(invoiceRes.data) ? invoiceRes.data.length : 0);
+                  setDeleteRequestCount(Array.isArray(requestRes.data) ? requestRes.data.length : 0);
+                  setDeleteNotificationCount(Array.isArray(notificationRes.data) ? notificationRes.data.length : 0);
+                  setIsDeleteModalOpen(true);
+                } catch (err) {
+                  setError('Không thể kiểm tra dữ liệu liên quan!');
+                  console.error(err);
+                }
+              }}
+            />
+            {/* Pagination controls */}
+            {totalPages > 1 && (
+                <PaginationControl
+                  current={currentPage}
+                  pageSize={residentsPerPage}
+                  total={residents.length}
+                  onChange={setCurrentPage}
+                />
+            )}
+          </div>
+        )}
       </div>
+
+      {/* Delete confirmation modal */}
+      <ConfirmDeleteModal
+        open={isDeleteModalOpen}
+        resident={deleteResident}
+        invoiceCount={deleteInvoiceCount}
+        requestCount={deleteRequestCount}
+        notificationCount={deleteNotificationCount}
+        onCancel={() => {
+          setIsDeleteModalOpen(false);
+          setDeleteResident(null);
+          setDeleteInvoiceCount(0);
+          setDeleteRequestCount(0);
+          setDeleteNotificationCount(0);
+        }}
+        onConfirm={async () => {
+          setLoading(true);
+          try {
+            const deleteRes = await api.delete(`/resident/${deleteResident.id}`);
+            message.success(`Xóa cư dân thành công! Đã xóa ${deleteRes.data.deletedInvoices || 0} hóa đơn, ${deleteRes.data.deletedRequests || 0} yêu cầu, ${deleteRes.data.deletedNotifications || 0} thông báo.`);
+            const response = await getResidents();
+            const sortedResidents = response.data.sort((a, b) => a.id - b.id);
+            setResidents(sortedResidents);
+            setIsDeleteModalOpen(false);
+            setDeleteResident(null);
+            setDeleteInvoiceCount(0);
+            setDeleteRequestCount(0);
+            setDeleteNotificationCount(0);
+            setLoading(false);
+          } catch (err) {
+            setLoading(false);
+            message.error('Xóa cư dân thất bại!');
+            setIsDeleteModalOpen(false);
+            setDeleteResident(null);
+            setDeleteInvoiceCount(0);
+            setDeleteRequestCount(0);
+            setDeleteNotificationCount(0);
+            console.error(err);
+          }
+        }}
+      />
+
+      {/* Edit resident modal */}
+      {editResident && (
+          <Modal
+            title={<span>Sửa thông tin cư dân</span>}
+            open={!!editResident}
+            onCancel={() => setEditResident(null)}
+            footer={null}
+          >
+            <ResidentForm
+              initialValues={editForm}
+              type="edit"
+              onFinish={async (values) => {
+                try {
+                  const updateData = {
+                    name: values.name,
+                    email: values.email,
+                    role: values.role,
+                  };
+                  if (values.password && values.password.length >= 6) {
+                    updateData.password = values.password;
+                  }
+                  await api.put(`/resident/${editResident.id}`, updateData);
+                  message.success('Cập nhật cư dân thành công!');
+                  const response = await getResidents();
+                  const sortedResidents = response.data.sort((a, b) => a.id - b.id);
+                  setResidents(sortedResidents);
+                  setEditResident(null);
+                } catch (err) {
+                  message.error('Cập nhật cư dân thất bại!');
+                  console.error(err);
+                }
+              }}
+              onCancel={() => setEditResident(null)}
+            />
+          </Modal>
+      )}
     </div>
   );
-};
+}
 
 export default ResidentsList;

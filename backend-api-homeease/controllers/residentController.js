@@ -1,10 +1,15 @@
 const prisma = require('../prismaClient');
+const bcrypt = require('bcryptjs');
 const { residentSchema } = require('../utils/validators')
 //Get all residents - GET
 const getResidents = async (req,res) => {
     try{
         const residents = await prisma.user.findMany({
-            where: { role: 'resident'}
+            where: {
+                role: {
+                    in: ['resident', 'admin']
+                }
+            }
         });
         res.json(residents)
     }catch(err){
@@ -67,7 +72,7 @@ const addResident = async (req, res) => {
                 address,
                 moveInDate: moveIn,
                 status,
-                role: 'resident'
+                role: req.body.role || 'resident'
             }
         });
         res.status(201).json({newResident});
@@ -91,27 +96,37 @@ const updateResident = async (req,res) => {
             gender,
             address,
             moveInDate,
-            status
+            status,
+            role
         } = req.body;
 
         //Convert date strings to JS Date objects
         const dob = dateOfBirth ? new Date(dateOfBirth) : null;
         const moveIn = moveInDate ? new Date(moveInDate) : null;
 
+        const updateData = {
+            name,
+            email,
+            phone,
+            apartmentNumber,
+            dateOfBirth: dob,
+            gender,
+            address,
+            moveInDate: moveIn,
+            status
+        };
+        if (typeof password === 'string' && password.length >= 6) {
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+            updateData.password = hashedPassword;
+        }
+        if (role) {
+            updateData.role = role;
+        }
+
         const updatedResident = await prisma.user.update({
             where: {id: Number(id)},
-            data: {
-                name,
-                email,
-                password,
-                phone,
-                apartmentNumber,
-                dateOfBirth: dob,
-                gender,
-                address,
-                moveInDate: moveIn,
-                status
-            }
+            data: updateData
         });
         res.json(updatedResident);
     }catch(err){
@@ -122,15 +137,33 @@ const updateResident = async (req,res) => {
 
 //Delete resident - DELETE
 const deleteResident = async (req,res) => {
-    try{
+    try {
         const { id } = req.params;
-        await prisma.user.delete({
-            where: { id: Number(id) }
+        // Đếm số lượng liên quan
+        const invoiceCount = await prisma.invoice.count({ where: { userId: Number(id) } });
+        const requestCount = await prisma.request.count({ where: { userId: Number(id) } });
+        const notificationCount = await prisma.notification.count({ where: { userId: Number(id) } });
+
+        // Xóa invoice liên quan
+        const deletedInvoices = await prisma.invoice.deleteMany({ where: { userId: Number(id) } });
+        // Xóa request liên quan
+        const deletedRequests = await prisma.request.deleteMany({ where: { userId: Number(id) } });
+        // Xóa notification liên quan
+        const deletedNotifications = await prisma.notification.deleteMany({ where: { userId: Number(id) } });
+        // Xóa user
+        await prisma.user.delete({ where: { id: Number(id) } });
+        res.json({ 
+            message: 'Resident deleted successfully!', 
+            deletedInvoices: deletedInvoices.count, 
+            deletedRequests: deletedRequests.count,
+            deletedNotifications: deletedNotifications.count,
+            invoiceCount,
+            requestCount,
+            notificationCount
         });
-        res.json({ message: 'Resident deleted successfully!'})
-    }catch(err){
+    } catch (err) {
         console.error(err);
-        res.status(500).json({error: `Failed to delete resident!`})
+        res.status(500).json({error: `Failed to delete resident!`, details: err.message});
     }
 }
 

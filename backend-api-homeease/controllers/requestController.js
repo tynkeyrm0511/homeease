@@ -4,7 +4,10 @@ const { requestSchema } = require('../utils/validators');
 //Get all requests - GET
 const getRequests = async (req,res) => {
     try {
+        const { userId } = req.query;
+        const where = userId ? { userId: Number(userId) } : {};
         const requests = await prisma.request.findMany({
+            where,
             include: {user:true}
         });
         res.json(requests);
