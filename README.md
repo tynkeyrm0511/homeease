@@ -86,45 +86,47 @@ homeease/
 
 ## 📊 Tiến độ dự án
 
+
 ### Backend ✅ (Hoàn thành)
 - [x] API cho quản lý cư dân
-- [x] API cho quản lý yêu cầu dịch vụ
+- [x] API cho quản lý yêu cầu dịch vụ (Request): CRUD, phân trang, filter, cập nhật trạng thái, phân quyền
 - [x] API cho quản lý hóa đơn
-- [x] API cho quản lý thông báo
+- [x] API cho quản lý thông báo (Notification): CRUD, filter nâng cao
 - [x] Authentication & Authorization
 - [x] Validation middleware
 - [x] Database schema & migrations
 - [x] Error handling
 
-### Frontend 🔄 (Đang làm)
 
-#### Phase 1: Nền tảng & Layout ✅ (Hoàn thành)
+### Frontend ✅ (Hoàn thành các tính năng chính)
+
+#### Phase 1: Nền tảng & Layout ✅
 - [x] Thiết lập cấu trúc dự án
 - [x] Hệ thống CSS & theme
 - [x] Header component với navigation
 - [x] App layout với routing
 - [x] Dashboard layout
 
-#### Phase 2: Core Components 🔄 (Đang làm)
-- [x] Quản lý cư dân: CRUD, phân trang
-- [ ] Quản lý yêu cầu dịch vụ
-- [x] Quản lý hóa đơn: CRUD, phân trang, trạng thái, toast, liên kết popup cư dân
-- [ ] Thông báo
+#### Phase 2: Core Components ✅
+- [x] Quản lý cư dân (Resident): CRUD, phân trang
+- [x] Quản lý yêu cầu dịch vụ (Request): CRUD, filter, popup chi tiết, cập nhật trạng thái, toast
+- [x] Quản lý hóa đơn (Invoice): CRUD, phân trang, trạng thái, toast, liên kết popup cư dân
+- [x] Thông báo (Notification): CRUD, filter nâng cao, popup chi tiết, toast
 
-#### Phase 3: Tích hợp dữ liệu
+#### Phase 3: Tích hợp dữ liệu ✅
 - [x] Thiết lập API service
 - [x] Kết nối với backend API
 - [x] Quản lý trạng thái (Context API)
 - [x] Tích hợp lưu hóa đơn vào CSDL qua API
-- [ ] Cập nhật real-time
+- [x] Đồng bộ dữ liệu Request/Notification
 
-#### Phase 4: Tính năng nâng cao
+#### Phase 4: Tính năng nâng cao 🔄
 - [x] Xác thực & Phân quyền
-- [ ] Hệ thống thông báo
+- [x] Hệ thống thông báo
 - [ ] Biểu đồ & thống kê
 - [ ] Tối ưu responsive
 
-#### Phase 5: Hoàn thiện & Triển khai
+#### Phase 5: Hoàn thiện & Triển khai 🔄
 - [ ] Cải thiện UI/UX
 - [ ] Kiểm thử
 - [ ] Build & deploy

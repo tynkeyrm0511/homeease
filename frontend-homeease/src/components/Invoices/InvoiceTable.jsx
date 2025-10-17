@@ -1,53 +1,80 @@
+
 import React from 'react';
-import { Button, Popconfirm, Tooltip } from 'antd';
+import dayjs from 'dayjs';
+import { Table, Button, Tag, Popconfirm, Tooltip } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
-const InvoiceTable = ({ invoices, onDetail, renderStatus, onEdit, onDelete }) => (
-  <table className="invoice-table" style={{ width: '100%', fontSize: '0.97rem', marginBottom: 0, borderCollapse: 'separate', borderSpacing: 0, minWidth: 900 }}>
-    <thead>
-      <tr>
-        <th style={{ width: 50 }}>Mã hóa đơn</th>
-        <th style={{ width: 160 }}>Tên cư dân</th>
-        <th style={{ width: 120 }}>Số tiền</th>
-        <th style={{ width: 120 }}>Loại hóa đơn</th>
-        <th style={{ width: 100, textAlign: 'center' }}>Trạng thái</th>
-        <th style={{ width: 120 }}>Ngày tạo</th>
-        <th style={{ width: 120 }}>Hạn thanh toán</th>
-        <th style={{ width: 120 }}>Hành động</th>
-      </tr>
-    </thead>
-    <tbody>
-      {invoices.map((invoice) => (
-        <tr key={invoice.id} className="invoice-row-padding">
-          <td style={{ verticalAlign: 'middle' }}>{invoice.id}</td>
-          <td style={{ verticalAlign: 'middle' }}>
-            <Button type="link" onClick={() => onDetail(invoice.user)} style={{ padding: 0 }}>
-              {invoice.user?.name || 'N/A'}
-            </Button>
-          </td>
-          <td style={{ verticalAlign: 'middle' }}>{invoice.amount?.toLocaleString()} VNĐ</td>
-          <td style={{ verticalAlign: 'middle' }}>{invoice.type === 'electric' ? 'Điện' : invoice.type === 'water' ? 'Nước' : invoice.type === 'service' ? 'Dịch vụ' : 'Khác'}</td>
-          <td style={{ verticalAlign: 'middle', padding: 0, height: 40 }}>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 40 }}>
-              {renderStatus(invoice.status)}
-            </div>
-          </td>
-          <td style={{ verticalAlign: 'middle' }}>{invoice.createdAt ? new Date(invoice.createdAt).toLocaleDateString() : ''}</td>
-          <td style={{ verticalAlign: 'middle' }}>{invoice.dueDate ? new Date(invoice.dueDate).toLocaleDateString() : ''}</td>
-          <td style={{ verticalAlign: 'middle' }}>
-            <Tooltip title="Sửa">
-              <Button type="text" icon={<EditOutlined />} onClick={() => onEdit(invoice)} style={{ marginRight: 4 }} />
-            </Tooltip>
-            <Popconfirm title="Bạn có chắc muốn xóa hóa đơn này?" onConfirm={() => onDelete(invoice.id)} okText="Xóa" cancelText="Hủy">
-              <Tooltip title="Xóa">
-                <Button type="text" danger icon={<DeleteOutlined />} />
-              </Tooltip>
-            </Popconfirm>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-);
+const getColumns = (onDetail, onEdit, onDelete) => [
+  { title: 'Mã hóa đơn', dataIndex: 'id', key: 'id', width: 80, responsive: ['xs', 'sm', 'md', 'lg', 'xl'] },
+  { title: 'Tên cư dân', dataIndex: 'user', key: 'user', width: 180, responsive: ['xs', 'sm', 'md', 'lg', 'xl'],
+    render: (user) => (
+      <Button type="link" onClick={() => onDetail(user)} style={{ padding: 0 }}>
+        {user?.name || 'N/A'}
+      </Button>
+    )
+  },
+  { title: 'Số tiền', dataIndex: 'amount', key: 'amount', width: 120, responsive: ['sm', 'md', 'lg', 'xl'],
+    render: (amount) => `${amount?.toLocaleString()} VNĐ` },
+  { title: 'Loại hóa đơn', dataIndex: 'type', key: 'type', width: 140, responsive: ['sm', 'md', 'lg', 'xl'],
+    render: (type) => {
+      if (type === 'electric') return 'Điện';
+      if (type === 'water') return 'Nước';
+      if (type === 'service') return 'Dịch vụ';
+      if (type === 'parking') return 'Gửi xe';
+      return 'Khác';
+    }
+  },
+  { title: 'Trạng thái', dataIndex: 'isPaid', key: 'isPaid', width: 120, responsive: ['xs', 'sm', 'md', 'lg', 'xl'],
+    render: (isPaid, record) => {
+      // Quá hạn nếu chưa thanh toán và đã quá hạn
+      const isOverdue = record.dueDate && !isPaid && new Date(record.dueDate) < new Date();
+      if (isPaid) return <Tag color="green">Đã thu tiền</Tag>;
+      if (isOverdue) return <Tag color="red">Quá hạn</Tag>;
+      return <Tag color="gold">Còn nợ</Tag>;
+    }
+  },
+  { title: 'Ngày tạo', dataIndex: 'createdAt', key: 'createdAt', width: 120, responsive: ['md', 'lg', 'xl'],
+    render: (date) => date ? dayjs(date).format('DD/MM/YYYY') : '' },
+  { title: 'Hạn thanh toán', dataIndex: 'dueDate', key: 'dueDate', width: 120, responsive: ['md', 'lg', 'xl'],
+    render: (date) => date ? dayjs(date).format('DD/MM/YYYY') : '' },
+  { title: 'Hành động', key: 'action', width: 100, responsive: ['xs', 'sm', 'md', 'lg', 'xl'],
+    render: (_, record) => (
+      <>
+        <Tooltip title="Sửa">
+          <Button type="link" icon={<EditOutlined />} onClick={() => onEdit(record)} style={{ marginRight: 4 }} />
+        </Tooltip>
+        <Popconfirm title="Bạn có chắc muốn xóa hóa đơn này?" onConfirm={() => onDelete(record.id)} okText="Xóa" cancelText="Hủy">
+          <Tooltip title="Xóa">
+            <Button type="link" danger icon={<DeleteOutlined />} />
+          </Tooltip>
+        </Popconfirm>
+      </>
+    )
+  },
+];
+
+
+const getPageSize = () => {
+  if (typeof window !== 'undefined') {
+    if (window.innerHeight < 700) return 5;
+    return 6;
+  }
+  return 6;
+};
+
+const InvoiceTable = ({ invoices, onDetail, renderStatus, onEdit, onDelete }) => {
+  const pageSize = getPageSize();
+  return (
+    <Table
+      columns={getColumns(onDetail, onEdit, onDelete)}
+      dataSource={invoices}
+      rowKey="id"
+      pagination={invoices.length > pageSize+2 ? { pageSize, position: ['bottomCenter'] } : false}
+      scroll={{ x: 'max-content' }}
+      style={{ fontSize: '0.97rem', background: '#fff', width: '100%' }}
+      rowClassName={() => 'invoice-row-custom'}
+    />
+  );
+};
 
 export default InvoiceTable;

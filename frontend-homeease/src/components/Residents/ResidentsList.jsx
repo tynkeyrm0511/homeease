@@ -1,6 +1,6 @@
 // src/components/Residents/ResidentsList.jsx
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, message, Input, Tag, Spin, ConfigProvider } from 'antd';
+import { Modal, Button, Input, Spin, message, ConfigProvider, Row, Col, Typography, Card } from 'antd';
 import ResidentTable from './components/ResidentTable';
 import ResidentForm from './components/ResidentForm';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
@@ -65,7 +65,7 @@ const ResidentsList = ({ selectedResidentId }) => {
       try {
           const response = await getResidents();
           // Sắp xếp cư dân theo id tăng dần để đảm bảo thứ tự luôn đúng
-          const sortedResidents = response.data.sort((a, b) => a.id - b.id);
+          const sortedResidents = response.sort((a, b) => a.id - b.id);
           setResidents(sortedResidents);
       } catch (err) {
         setError('Không thể tải danh sách cư dân');
@@ -93,8 +93,58 @@ const ResidentsList = ({ selectedResidentId }) => {
     }, 400); // loading 400ms cho cảm giác mượt
   };
 
-  if (loading) return <div>Loading...</div>; // Hiển thị loading
-  if (error) return <div className="alert alert-danger">{error}</div>; // Hiển thị lỗi
+  if (loading) return (
+    <div style={{ margin: 24, maxWidth: 1200, marginLeft: 'auto', marginRight: 'auto', width: '100%' }}>
+      <Card style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.07)', borderRadius: 12, padding: 0, background: '#fafcff', minHeight: 400, paddingTop: 0 }} bodyStyle={{ padding: 0 }}>
+        <div style={{ padding: '24px 24px 0 24px' }}>
+          <Row gutter={[12, 12]} align="middle" wrap>
+            <Col xs={24} style={{ marginBottom: 8 }}>
+              <Typography.Title level={4} style={{ margin: 0, fontWeight: 700, color: '#2b2b2b' }}>Quản lý cư dân</Typography.Title>
+            </Col>
+            <Col xs={24}>
+              <Row gutter={[16, 16]} align="middle" justify="start" wrap style={{ width: '100%' }}>
+                <Col xs={24} sm={12} md={6} style={{ marginBottom: 8 }}>
+                  <Input.Search
+                    placeholder="Tìm kiếm theo tên, email, số căn hộ..."
+                    allowClear
+                    value={searchText}
+                    onChange={e => setSearchText(e.target.value)}
+                    style={{ width: '100%' }}
+                  />
+                </Col>
+                <Col xs={12} sm={6} md={4} style={{ marginBottom: 8 }}>
+                  <Button type="primary" style={{ width: '100%' }} onClick={() => setShowForm(true)}>
+                    Thêm dân cư
+                  </Button>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </div>
+        <div style={{ padding: 24 }}>
+          <div style={{ borderRadius: 10, background: '#fff', padding: 24, minHeight: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Spin size="large" />
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+  if (error) return (
+    <div style={{ margin: 24, maxWidth: 1200, marginLeft: 'auto', marginRight: 'auto', width: '100%' }}>
+      <Card style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.07)', borderRadius: 12, padding: 0, background: '#fafcff', minHeight: 400, paddingTop: 0 }} bodyStyle={{ padding: 0 }}>
+        <div style={{ padding: '24px 24px 0 24px' }}>
+          <Row gutter={[12, 12]} align="middle" wrap>
+            <Col xs={24} style={{ marginBottom: 8 }}>
+              <Typography.Title level={4} style={{ margin: 0, fontWeight: 700, color: '#2b2b2b' }}>Quản lý cư dân</Typography.Title>
+            </Col>
+          </Row>
+        </div>
+        <div style={{ padding: 24 }}>
+          <div className="text-danger mt-2">{error}</div>
+        </div>
+      </Card>
+    </div>
+  );
   return (
     <ConfigProvider
       theme={{
@@ -107,50 +157,66 @@ const ResidentsList = ({ selectedResidentId }) => {
         },
       }}
     >
-      <div style={{ marginTop: 40, maxWidth: 1200, minHeight: '100vh', marginLeft: 'auto', marginRight: 'auto', width: '100%' }}>
-        <h4 className="mb-3 fw-bold" style={{ fontSize: 22 }}>DANH SÁCH CƯ DÂN</h4>
-        <Input.Search
-          placeholder="Tìm kiếm theo tên, email, số căn hộ..."
-          allowClear
-          value={searchText}
-          onChange={e => setSearchText(e.target.value)}
-          style={{ maxWidth: 350, marginBottom: 16 }}
-        />
-        <Button type="primary" style={{ marginBottom: 12, marginLeft: 8 }} onClick={() => setShowForm(true)}>
-          Thêm dân cư
-        </Button>
+      <ToastContainer position="top-right" autoClose={2200} hideProgressBar={false} newestOnTop closeOnClick pauseOnHover theme="colored" />
+      <Card style={{ margin: 24, boxShadow: '0 2px 8px rgba(0,0,0,0.07)', borderRadius: 12, padding: 0, background: '#fafcff', minHeight: 400, paddingTop: 0 }} bodyStyle={{ padding: 0 }}>
+        <div style={{ padding: '24px 24px 0 24px' }}>
+          <Row gutter={[12, 12]} align="middle" wrap>
+            <Col xs={24} style={{ marginBottom: 8 }}>
+              <Typography.Title level={4} style={{ margin: 0, fontWeight: 700, color: '#2b2b2b' }}>Quản lý cư dân</Typography.Title>
+            </Col>
+            <Col xs={24}>
+              <Row gutter={[16, 16]} align="middle" justify="start" wrap style={{ width: '100%' }}>
+                <Col xs={24} sm={12} md={6} style={{ marginBottom: 8 }}>
+                  <Input.Search
+                    placeholder="Tìm kiếm theo tên, email, số căn hộ..."
+                    allowClear
+                    value={searchText}
+                    onChange={e => setSearchText(e.target.value)}
+                    style={{ width: '100%' }}
+                  />
+                </Col>
+                <Col xs={12} sm={6} md={4} style={{ marginBottom: 8 }}>
+                  <Button type="primary" style={{ width: '100%' }} onClick={() => setShowForm(true)}>
+                    Thêm dân cư
+                  </Button>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </div>
         {showForm && (
-            <Modal
-              title="THÊM DÂN CƯ MỚI"
-              open={showForm}
+          <Modal
+            title="THÊM DÂN CƯ MỚI"
+            open={showForm}
+            onCancel={() => setShowForm(false)}
+            footer={null}
+          >
+            <ResidentForm
+              initialValues={newResident}
+              type="add"
+              onFinish={async (values) => {
+                try {
+                  const res = await createResident(values);
+                  setResidents(prev => [...prev, res.data.newResident]);
+                  setShowForm(false);
+                  setNewResident({ name: '', email: '', password: '', role: 'resident' });
+                  setTimeout(() => toast.success('Thêm cư dân thành công!'), 100);
+                } catch (err) {
+                  setTimeout(() => toast.error('Thêm cư dân thất bại!'), 100);
+                  console.error(err);
+                }
+              }}
               onCancel={() => setShowForm(false)}
-              footer={null}
-            >
-              <ResidentForm
-                initialValues={newResident}
-                type="add"
-                onFinish={async (values) => {
-                  try {
-                    const res = await createResident(values);
-                    setResidents(prev => [...prev, res.data.newResident]);
-                    setShowForm(false);
-                    setNewResident({ name: '', email: '', password: '', role: 'resident' });
-                    setTimeout(() => toast.success('Thêm cư dân thành công!'), 100);
-                  } catch (err) {
-                    setTimeout(() => toast.error('Thêm cư dân thất bại!'), 100);
-                    console.error(err);
-                  }
-                }}
-                onCancel={() => setShowForm(false)}
-              />
-            </Modal>
+            />
+          </Modal>
         )}
-
-        <div>
+        <div style={{ padding: 24 }}>
           {filteredResidents.length === 0 ? (
-            <p>Không có cư dân nào.</p>
+            <div style={{ borderRadius: 10, background: '#fff', padding: 24, minHeight: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <p>Không có cư dân nào.</p>
+            </div>
           ) : (
-            <div style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.07)', borderRadius: 10, background: '#fff', padding: 24, overflowX: 'auto', position: 'relative', minHeight: 200 }}>
+            <div style={{ borderRadius: 10, background: '#fff', padding: 0, position: 'relative', minHeight: 200 }}>
               {pageLoading && (
                 <div style={{
                   position: 'absolute',
@@ -196,24 +262,22 @@ const ResidentsList = ({ selectedResidentId }) => {
               />
               {/* Pagination controls */}
               {totalPages > 1 && (
-                  <PaginationControl
-                    current={currentPage}
-                    pageSize={residentsPerPage}
-                    total={filteredResidents.length}
-                    onChange={handlePageChange}
-                  />
+                <PaginationControl
+                  current={currentPage}
+                  pageSize={residentsPerPage}
+                  total={filteredResidents.length}
+                  onChange={handlePageChange}
+                />
               )}
             </div>
           )}
         </div>
-
         {/* Resident Detail Modal */}
         <ResidentDetail
           residentId={detailResidentId}
           visible={showDetailModal}
           onClose={() => setShowDetailModal(false)}
         />
-
         {/* Delete confirmation modal */}
         <ConfirmDeleteModal
           open={isDeleteModalOpen}
@@ -252,54 +316,52 @@ const ResidentsList = ({ selectedResidentId }) => {
             }
           }}
         />
-
         {/* Edit resident modal */}
         {editResident && (
-            <Modal
-              title={<span>Sửa thông tin cư dân</span>}
-              open={!!editResident}
-              onCancel={() => setEditResident(null)}
-              footer={null}
-            >
-              <ResidentForm
-                initialValues={editForm}
-                type="edit"
-                onFinish={async (values) => {
-                  try {
-                    const updateData = {
-                      name: values.name,
-                      email: values.email,
-                      role: values.role,
-                      phone: values.phone,
-                      apartmentNumber: values.apartmentNumber,
-                      gender: values.gender,
-                      address: values.address,
-                      status: values.status,
-                    };
-                    if (values.dateOfBirth) {
-                      updateData.dateOfBirth = values.dateOfBirth.format ? values.dateOfBirth.format('YYYY-MM-DD') : values.dateOfBirth;
-                    }
-                    if (values.moveInDate) {
-                      updateData.moveInDate = values.moveInDate.format ? values.moveInDate.format('YYYY-MM-DD') : values.moveInDate;
-                    }
-                    if (values.password && values.password.length >= 6) {
-                      updateData.password = values.password;
-                    }
-                    const res = await api.put(`/resident/${editResident.id}`, updateData);
-                    setResidents(prev => prev.map(r => r.id === editResident.id ? res.data : r));
-                    setEditResident(null);
-                    setTimeout(() => toast.success('Cập nhật cư dân thành công!'), 100);
-                  } catch (err) {
-                    setTimeout(() => toast.error('Cập nhật cư dân thất bại!'), 100);
-                    console.error(err);
+          <Modal
+            title={<span>Sửa thông tin cư dân</span>}
+            open={!!editResident}
+            onCancel={() => setEditResident(null)}
+            footer={null}
+          >
+            <ResidentForm
+              initialValues={editForm}
+              type="edit"
+              onFinish={async (values) => {
+                try {
+                  const updateData = {
+                    name: values.name,
+                    email: values.email,
+                    role: values.role,
+                    phone: values.phone,
+                    apartmentNumber: values.apartmentNumber,
+                    gender: values.gender,
+                    address: values.address,
+                    status: values.status,
+                  };
+                  if (values.dateOfBirth) {
+                    updateData.dateOfBirth = values.dateOfBirth.format ? values.dateOfBirth.format('YYYY-MM-DD') : values.dateOfBirth;
                   }
-                }}
-                onCancel={() => setEditResident(null)}
-              />
-            </Modal>
+                  if (values.moveInDate) {
+                    updateData.moveInDate = values.moveInDate.format ? values.moveInDate.format('YYYY-MM-DD') : values.moveInDate;
+                  }
+                  if (values.password && values.password.length >= 6) {
+                    updateData.password = values.password;
+                  }
+                  const res = await api.put(`/resident/${editResident.id}`, updateData);
+                  setResidents(prev => prev.map(r => r.id === editResident.id ? res.data : r));
+                  setEditResident(null);
+                  setTimeout(() => toast.success('Cập nhật cư dân thành công!'), 100);
+                } catch (err) {
+                  setTimeout(() => toast.error('Cập nhật cư dân thất bại!'), 100);
+                  console.error(err);
+                }
+              }}
+              onCancel={() => setEditResident(null)}
+            />
+          </Modal>
         )}
-        <ToastContainer />
-      </div>
+      </Card>
     </ConfigProvider>
   );
 }

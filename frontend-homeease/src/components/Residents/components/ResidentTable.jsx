@@ -20,6 +20,7 @@ const ResidentTable = ({ residents, onEdit, onDelete, onDetail, renderStatus }) 
       <tr>
         <th style={{ width: 50 }}>ID</th>
         <th style={{ width: 160 }}>Tên</th>
+        <th style={{ width: 120 }}>Số căn hộ</th>
         <th style={{ width: 220 }}>Email</th>
         <th style={{ width: 90 }}>Vai trò</th>
         <th style={{ width: 100, textAlign: 'center' }}>Trạng thái</th>
@@ -35,6 +36,7 @@ const ResidentTable = ({ residents, onEdit, onDelete, onDetail, renderStatus }) 
               {resident.name}
             </Button>
           </td>
+          <td style={{ verticalAlign: 'middle' }}>{resident.apartmentNumber || '-'}</td>
           <td style={{ verticalAlign: 'middle' }}>{resident.email}</td>
           <td style={{ verticalAlign: 'middle', textTransform: 'capitalize' }}>{resident.role}</td>
           <td style={{ verticalAlign: 'middle', padding: 0, height: 40 }}>

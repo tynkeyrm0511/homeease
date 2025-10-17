@@ -1,10 +1,10 @@
-// src/services/api.js
 import axios from 'axios';
 
 // Sử dụng import.meta.env thay vì process.env (Vite way)
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 console.log('API Base URL:', API_BASE_URL); // Debug
+
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -40,44 +40,29 @@ api.interceptors.response.use(
   }
 );
 
-// Residents API
-export const getResidents = () => {
-  return api.get('/resident');
-};
+// --- Residents API ---
+export const getResidents = () => api.get('/resident').then(res => res.data);
+export const getResidentById = (id) => api.get(`/resident/${id}`);
+export const createResident = (residentData) => api.post('/resident', residentData);
+export const deleteResident = (id) => api.delete(`/resident/${id}`);
 
-export const getResidentById = (id) => {
-  return api.get(`/resident/${id}`);
-};
+// --- Invoice API ---
+export const getInvoices = () => api.get('/invoice').then(res => res.data);
+export const createInvoice = (invoiceData) => api.post('/invoice', invoiceData).then(res => res.data);
+export const updateInvoice = (id, invoiceData) => api.put(`/invoice/${id}`, invoiceData).then(res => res.data);
+export const deleteInvoice = (id) => api.delete(`/invoice/${id}`).then(res => res.data);
 
+// --- Request API ---
+export const getRequests = (params) => api.get('/request', { params }).then(res => res.data);
+export const getRequestById = (id) => api.get(`/request/${id}`).then(res => res.data);
+export const updateRequestStatus = (id, data) => api.put(`/request/${id}`, data).then(res => res.data);
 
-// Thêm cư dân mới
-export const createResident = (residentData) => {
-  return api.post('/resident', residentData);
-};
-
-// Xóa cư dân
-export const deleteResident = (id) => {
-  return api.delete(`/resident/${id}`);
-};
-
-// Invoice API
-export const getInvoices = () => {
-  return api.get('/invoice').then(res => res.data);
-};
-
-// Thêm hóa đơn
-export const createInvoice = (invoiceData) => {
-  return api.post('/invoice', invoiceData).then(res => res.data);
-};
-
-// Sửa hóa đơn
-export const updateInvoice = (id, invoiceData) => {
-  return api.put(`/invoice/${id}`, invoiceData).then(res => res.data);
-};
-
-// Xóa hóa đơn
-export const deleteInvoice = (id) => {
-  return api.delete(`/invoice/${id}`).then(res => res.data);
-};
+// --- Notification API ---
+export const getNotifications = () => api.get('/notification').then(res => res.data);
+export const getNotificationById = (id) => api.get(`/notification/${id}`).then(res => res.data);
+export const createNotification = (data) => api.post('/notification/add', data).then(res => res.data);
+export const updateNotification = (id, data) => api.put(`/notification/${id}`, data).then(res => res.data);
+export const deleteNotification = (id) => api.delete(`/notification/${id}`).then(res => res.data);
 
 export default api;
+

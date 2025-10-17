@@ -16,7 +16,14 @@ const InvoiceForm = ({ initialValues, type = 'add', onFinish, onCancel, resident
           name="userId"
           rules={[{ required: true, message: 'Vui lòng chọn cư dân!' }]}
         >
-          <Select placeholder="Chọn cư dân">
+          <Select
+            showSearch
+            placeholder="Chọn cư dân"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option.children.toLowerCase().includes(input.toLowerCase())
+            }
+          >
             {residentOptions.map(resident => (
               <Option key={resident.id} value={resident.id}>{resident.name}</Option>
             ))}

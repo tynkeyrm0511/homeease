@@ -4,8 +4,10 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Login from './components/Auth/Login';
 import Dashboard from './components/Dashboard';
 import ResidentsList from './components/Residents/ResidentsList';
+import RequestAdminPage from './components/Requests/RequestAdminPage';
 import Header from './components/Header';
 import InvoiceList from './components/Invoices/InvoiceList';
+import NotificationList from './components/Notifications/NotificationList';
 import { Spin } from 'antd';
 import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -76,12 +78,12 @@ function AppContent() {
         )}
         {!tabLoading && currentView === 'dashboard' && <Dashboard />}
         {!tabLoading && currentView === 'residents' && <ResidentsList selectedResidentId={selectedResidentId} />}
-        {!tabLoading && currentView === 'requests' && <div className="p-4">Yêu cầu đang được phát triển...</div>}
+        {!tabLoading && currentView === 'requests' && <RequestAdminPage />}
         {!tabLoading && currentView === 'invoices' && <InvoiceList onShowResidentDetail={(residentId) => {
           setSelectedResidentId(residentId);
           handleTabChange('residents');
         }} />}
-        {!tabLoading && currentView === 'notifications' && <div className="p-4">Thông báo đang được phát triển...</div>}
+        {!tabLoading && currentView === 'notifications' && <NotificationList />}
       </div>
     </>
   );

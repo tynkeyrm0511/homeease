@@ -30,9 +30,9 @@ async function main() {
             name: faker.person.fullName(),
             email: faker.internet.email(),
             password: hashedPassword,
-            role: 'resident'
-            // Chỉ tạo fields có trong User model
-            // Nếu cần thêm fields khác, update schema trước
+            role: 'resident',
+            apartmentNumber: `A${faker.number.int({ min: 101, max: 120 })}`,
+            houseNumber: `${faker.number.int({ min: 1, max: 50 })}`
         });
     }
     await prisma.user.createMany({ data: residents });

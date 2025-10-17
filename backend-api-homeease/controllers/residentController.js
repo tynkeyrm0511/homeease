@@ -9,6 +9,20 @@ const getResidents = async (req,res) => {
                 role: {
                     in: ['resident', 'admin']
                 }
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                phone: true,
+                apartmentNumber: true,
+                houseNumber: true,
+                dateOfBirth: true,
+                gender: true,
+                address: true,
+                moveInDate: true,
+                status: true,
+                role: true
             }
         });
         res.json(residents)
