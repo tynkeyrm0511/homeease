@@ -120,12 +120,6 @@ homeease/
 - [x] Tích hợp lưu hóa đơn vào CSDL qua API
 - [x] Đồng bộ dữ liệu Request/Notification
 
-#### Phase 4: Tính năng nâng cao 🔄
-- [x] Xác thực & Phân quyền
-- [x] Hệ thống thông báo
-- [ ] Biểu đồ & thống kê
-- [ ] Tối ưu responsive
-
 #### Phase 4: Tính năng nâng cao (Đang tiến hành) 🔄
 - [x] Xác thực & Phân quyền
 - [x] Hệ thống thông báo
