@@ -86,7 +86,7 @@ homeease/
 
 ## 📊 Tiến độ dự án
 
-
+-
 ### Backend ✅ (Hoàn thành)
 - [x] API cho quản lý cư dân
 - [x] API cho quản lý yêu cầu dịch vụ (Request): CRUD, phân trang, filter, cập nhật trạng thái, phân quyền
@@ -125,6 +125,19 @@ homeease/
 - [x] Hệ thống thông báo
 - [ ] Biểu đồ & thống kê
 - [ ] Tối ưu responsive
+
+#### Phase 4: Tính năng nâng cao (Đang tiến hành) 🔄
+- [x] Xác thực & Phân quyền
+- [x] Hệ thống thông báo
+- [~] Biểu đồ & thống kê (Đã tích hợp dashboard với dữ liệu thực - đang tinh chỉnh và tối ưu hiển thị)
+- [ ] Tối ưu responsive
+
+### Những thay đổi gần đây (Update 2025-10-19)
+- Dashboard: Tích hợp dữ liệu thực từ backend (requests, invoices, residents) và chuyển các biểu đồ từ dữ liệu giả sang dữ liệu thật.
+- Sửa UX: Dashboard giờ sử dụng thanh cuộn bên ngoài của trình duyệt (loại bỏ scroll nội bộ chỉ riêng cho dashboard).
+- Thêm thư viện frontend: recharts (biểu đồ), react-countup (hiệu ứng đếm số), @ant-design/pro-components (một số tiện ích giao diện nếu cần).
+- Sửa lỗi và tối ưu: Cập nhật cấu trúc trang để tránh mất phân trang ở một số trang (ví dụ Requests), và chỉnh lại một số component để tuân theo layout "compact".
+- Trạng thái: Tiếp tục tinh chỉnh giao diện biểu đồ, xử lý trạng thái trống và quản lý loading/error.
 
 #### Phase 5: Hoàn thiện & Triển khai 🔄
 - [ ] Cải thiện UI/UX
