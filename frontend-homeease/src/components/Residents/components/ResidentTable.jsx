@@ -1,63 +1,107 @@
 import React from 'react';
-import { Button } from 'antd';
+import { Button, Table, Tag } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
-const StatusDot = ({ color }) => (
-  <span style={{
-    display: 'inline-block',
-    width: 12,
-    height: 12,
-    borderRadius: '50%',
-    background: color,
-    margin: 0,
-    verticalAlign: 'middle',
-  }} />
-);
+const getColumns = (onEdit, onDelete, onDetail, renderStatus) => [
+  { 
+    title: 'ID', 
+    dataIndex: 'id', 
+    key: 'id', 
+    width: 60,
+    sorter: (a, b) => a.id - b.id
+  },
+  { 
+    title: 'Tên', 
+    dataIndex: 'name', 
+    key: 'name', 
+    width: 160,
+    sorter: (a, b) => a.name.localeCompare(b.name),
+    render: (text, record) => (
+      <Button type="link" onClick={() => onDetail && onDetail(record)} style={{ padding: 0 }}>
+        {text}
+      </Button>
+    )
+  },
+  { 
+    title: 'Số căn hộ', 
+    dataIndex: 'apartmentNumber', 
+    key: 'apartmentNumber', 
+    width: 120,
+    render: (text) => text || '-',
+    sorter: (a, b) => (a.apartmentNumber || '').localeCompare(b.apartmentNumber || '')
+  },
+  { 
+    title: 'Email', 
+    dataIndex: 'email', 
+    key: 'email', 
+    width: 220,
+    sorter: (a, b) => a.email.localeCompare(b.email)
+  },
+  { 
+    title: 'Vai trò', 
+    dataIndex: 'role', 
+    key: 'role', 
+    width: 100,
+    render: (text) => {
+      let color = 'default';
+      if (text === 'admin') color = 'blue';
+      else if (text === 'resident') color = 'green';
+      return <Tag color={color} style={{ fontWeight: 500, textTransform: 'capitalize' }}>{text}</Tag>;
+    },
+    filters: [
+      { text: 'Admin', value: 'admin' },
+      { text: 'Resident', value: 'resident' },
+    ],
+    onFilter: (value, record) => record.role === value
+  },
+  { 
+    title: 'Trạng thái', 
+    dataIndex: 'status', 
+    key: 'status', 
+    width: 100,
+    align: 'center',
+    render: (status) => {
+      if (renderStatus) return renderStatus(status);
+      
+      let color = status === 'active' ? 'green' : 'red';
+      let text = status === 'active' ? 'Hoạt động' : 'Vô hiệu';
+      
+      return <Tag color={color} style={{ fontWeight: 500 }}>{text}</Tag>;
+    },
+    filters: [
+      { text: 'Hoạt động', value: 'active' },
+      { text: 'Vô hiệu', value: 'inactive' },
+    ],
+    onFilter: (value, record) => record.status === value
+  },
+  { 
+    title: 'Hành động', 
+    key: 'action', 
+    width: 100,
+    render: (_, record) => (
+      <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
+        <Button type="text" icon={<EditOutlined />} onClick={() => onEdit(record)} />
+        <Button type="text" danger icon={<DeleteOutlined />} onClick={() => onDelete(record)} />
+      </div>
+    )
+  }
+];
 
 const ResidentTable = ({ residents, onEdit, onDelete, onDetail, renderStatus }) => (
-  <table className="resident-table" style={{ width: '100%', fontSize: '0.97rem', marginBottom: 0, borderCollapse: 'separate', borderSpacing: 0, minWidth: 900 }}>
-    <thead>
-      <tr>
-        <th style={{ width: 50 }}>ID</th>
-        <th style={{ width: 160 }}>Tên</th>
-        <th style={{ width: 120 }}>Số căn hộ</th>
-        <th style={{ width: 220 }}>Email</th>
-        <th style={{ width: 90 }}>Vai trò</th>
-        <th style={{ width: 100, textAlign: 'center' }}>Trạng thái</th>
-        <th style={{ width: 70 }}></th>
-      </tr>
-    </thead>
-    <tbody>
-      {residents.map((resident) => (
-        <tr key={resident.id}>
-          <td style={{ verticalAlign: 'middle' }}>{resident.id}</td>
-          <td style={{ verticalAlign: 'middle' }}>
-            <Button type="link" onClick={() => onDetail && onDetail(resident)} style={{ padding: 0 }}>
-              {resident.name}
-            </Button>
-          </td>
-          <td style={{ verticalAlign: 'middle' }}>{resident.apartmentNumber || '-'}</td>
-          <td style={{ verticalAlign: 'middle' }}>{resident.email}</td>
-          <td style={{ verticalAlign: 'middle', textTransform: 'capitalize' }}>{resident.role}</td>
-          <td style={{ verticalAlign: 'middle', padding: 0, height: 40 }}>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 40 }}>
-              {renderStatus ? renderStatus(resident.status) : (
-                resident.status === 'active'
-                  ? <StatusDot color="#52c41a" />
-                  : <StatusDot color="#ff4d4f" />
-              )}
-            </div>
-          </td>
-          <td style={{ verticalAlign: 'middle' }}>
-            <div className="resident-action-group" style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
-              <Button type="text" icon={<EditOutlined />} onClick={() => onEdit(resident)} />
-              <Button type="text" danger icon={<DeleteOutlined />} onClick={() => onDelete(resident)} />
-            </div>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+  <Table
+    columns={getColumns(onEdit, onDelete, onDetail, renderStatus)}
+    dataSource={residents}
+    rowKey="id"
+    pagination={{ pageSize: 10 }}
+    scroll={{ x: 900 }}
+    style={{ 
+      fontSize: '0.97rem', 
+      background: '#fff', 
+      width: '100%', 
+      borderRadius: '8px',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.05)' 
+    }}
+  />
 );
 
 export default ResidentTable;

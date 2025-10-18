@@ -162,8 +162,9 @@ html, body {
 .resident-table tbody tr {
   transition: background 0.2s;
 }
-.resident-table tbody tr:hover {
-  background: #f5f7fa;
+.resident-table tbody tr:hover,
+.notification-table-row:hover {
+  background: #f5f7fa !important;
   cursor: pointer;
 }
 .resident-action-group {
@@ -173,6 +174,26 @@ html, body {
   align-items: center;
   justify-content: center;
 }
+/* Styles for notification table */
+.notification-table-custom .ant-table-cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notification-table-custom .ant-table-thead > tr > th {
+  background: #f9fafb;
+  font-weight: 600;
+}
+
+.notification-table-custom .ant-btn-link {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+}
+
 @media (max-width: 900px) {
   .resident-table {
     min-width: 600px;

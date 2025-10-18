@@ -116,25 +116,23 @@ const RequestAdminPage = () => {
 
   return (
     <Card
+      className="compact-card"
       style={{
-        margin: 24,
         boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
         borderRadius: 12,
         padding: 0,
         background: '#fafcff',
-        minHeight: 400,
-        paddingTop: 0,
       }}
       bodyStyle={{ padding: 0 }}
     >
-      <div style={{ padding: '24px 24px 0 24px' }}>
-        <Row gutter={[12, 0]} align="middle" wrap>
+      <div className="compact-header" style={{ padding: '12px 16px 0 16px' }}>
+        <Row gutter={[8, 8]} align="middle" wrap>
           <Col xs={24}>
-            <Typography.Title level={4} style={{ margin: 0, fontWeight: 700, color: '#2b2b2b', paddingBottom: 8 }}>Quản lý yêu cầu</Typography.Title>
+            <Typography.Title level={4} style={{ margin: 0, fontWeight: 700, color: '#2b2b2b', fontSize: '1.2rem', paddingBottom: 4 }}>Quản lý yêu cầu</Typography.Title>
           </Col>
           <Col xs={24}>
-            <Row gutter={[16, 0]} align="middle" justify="start" wrap style={{ width: '100%' }}>
-              <Col xs={24} sm={12} md={6}>
+            <Row gutter={[8, 8]} align="middle" justify="start" wrap style={{ width: '100%' }}>
+              <Col xs={24} sm={12} md={6} style={{ marginBottom: 4 }}>
                 <Input.Search
                   placeholder="Tìm kiếm theo tiêu đề hoặc người gửi"
                   allowClear
@@ -143,7 +141,7 @@ const RequestAdminPage = () => {
                   style={{ width: '100%' }}
                 />
               </Col>
-              <Col xs={12} sm={6} md={4}>
+              <Col xs={12} sm={6} md={4} style={{ marginBottom: 4 }}>
                 <Select
                   placeholder="Trạng thái"
                   allowClear
@@ -157,7 +155,7 @@ const RequestAdminPage = () => {
                   <Option value="rejected">Từ chối</Option>
                 </Select>
               </Col>
-              <Col xs={12} sm={6} md={4}>
+              <Col xs={12} sm={6} md={4} style={{ marginBottom: 4 }}>
                 <Select
                   placeholder="Loại yêu cầu"
                   allowClear
@@ -172,7 +170,7 @@ const RequestAdminPage = () => {
                   <Option value="service">Dịch vụ</Option>
                 </Select>
               </Col>
-              <Col xs={12} sm={6} md={4}>
+              <Col xs={12} sm={6} md={4} style={{ marginBottom: 4 }}>
                 <Select
                   placeholder="Ưu tiên"
                   allowClear
@@ -185,7 +183,7 @@ const RequestAdminPage = () => {
                   <Option value="low">Thấp</Option>
                 </Select>
               </Col>
-              <Col xs={12} sm={6} md={4}>
+              <Col xs={12} sm={6} md={4} style={{ marginBottom: 4 }}>
                 <Select
                   showSearch
                   placeholder="Người gửi"
@@ -203,55 +201,55 @@ const RequestAdminPage = () => {
                     ))}
                 </Select>
               </Col>
-              <Col xs={24} md={6}>
-                <Row gutter={[8, 0]} align="middle" justify="start" style={{ width: '100%' }}>
-                  <Col xs={24} md={12} style={{ display: 'flex', alignItems: 'center' }}>
-                    <Checkbox checked={showAll} onChange={e => setShowAll(e.target.checked)}>
-                      Hiển thị tất cả
-                    </Checkbox>
-                  </Col>
-                </Row>
+              <Col xs={12} sm={6} md={4}>
+                <Checkbox checked={showAll} onChange={e => setShowAll(e.target.checked)}>
+                  Hiển thị tất cả
+                </Checkbox>
               </Col>
             </Row>
           </Col>
         </Row>
-        <div style={{ padding: '24px 0 0 0' }}>
-          {loading ? (
-            <div style={{ borderRadius: 10, background: '#fff', padding: 24, minHeight: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Spin size="large" />
+      </div>
+      <div className="compact-content" style={{ padding: 16 }}>
+        {loading ? (
+          <div style={{ borderRadius: 10, background: '#fff', padding: 16, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Spin size="large" />
+          </div>
+        ) : data.length === 0 ? (
+          <div style={{ borderRadius: 10, background: '#fff', padding: 16, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <p>Không có yêu cầu nào.</p>
+          </div>
+        ) : (
+          <div className="compact-table-container">
+            <div className="compact-table-wrapper">
+              <RequestTableAdmin
+                data={data.slice((currentPage - 1) * pageSize, currentPage * pageSize)}
+                loading={loading}
+                onDetail={handleDetail}
+                className="compact-table"
+              />
             </div>
-          ) : data.length === 0 ? (
-            <div style={{ borderRadius: 10, background: '#fff', padding: 24, minHeight: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <p>Không có yêu cầu nào.</p>
-            </div>
-          ) : (
-            <>
-              <div style={{ borderRadius: 10, background: '#fff', padding: 0, overflowX: 'auto', position: 'relative', minHeight: 200 }}>
-                <RequestTableAdmin
-                  data={data.slice((currentPage - 1) * pageSize, currentPage * pageSize)}
-                  loading={loading}
-                  onDetail={handleDetail}
-                />
-              </div>
-              {data.length > pageSize && (
+            {data.length > pageSize && (
+              <div className="compact-pagination">
                 <PaginationControl
                   current={currentPage}
                   pageSize={pageSize}
                   total={data.length}
                   onChange={setCurrentPage}
+                  size="small"
                 />
-              )}
-            </>
-          )}
-          <RequestDetailModal
-            open={modalOpen}
-            onClose={() => setModalOpen(false)}
-            request={selectedRequest}
-            onStatusChange={handleStatusChange}
-            onSave={handleSave}
-            loading={modalLoading}
-          />
-        </div>
+              </div>
+            )}
+          </div>
+        )}
+        <RequestDetailModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          request={selectedRequest}
+          onStatusChange={handleStatusChange}
+          onSave={handleSave}
+          loading={modalLoading}
+        />
       </div>
     </Card>
   );

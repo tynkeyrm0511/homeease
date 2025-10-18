@@ -1,0 +1,88 @@
+/* Compact Pages CSS - For fitting pages in a single screen */
+
+/* Common styles for all compact pages */
+.compact-layout {
+  height: calc(100vh - 80px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.compact-header {
+  flex: 0 0 auto;
+  padding-bottom: 12px !important;
+}
+
+.compact-content {
+  flex: 1;
+  overflow: auto;
+  padding: 0 !important;
+}
+
+.compact-table-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.compact-table-wrapper {
+  flex: 1;
+  overflow: auto;
+  border-radius: 10px;
+  background: #fff;
+}
+
+/* Reduce padding and margins for compact views */
+.compact-card {
+  margin: 12px !important;
+  padding: 0 !important;
+  height: calc(100vh - 104px) !important;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.compact-card .ant-card-body {
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Make table more compact */
+.compact-table .ant-table-thead > tr > th {
+  padding: 10px 16px;
+}
+
+.compact-table .ant-table-tbody > tr > td {
+  padding: 8px 16px;
+}
+
+/* Pagination styling */
+.compact-pagination {
+  background: #fff;
+  padding: 8px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+/* Adjust dashboard for compact view */
+.compact-dashboard {
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+  /* Remove fixed height and overflow to allow external scrolling */
+}
+
+.compact-dashboard .card {
+  margin-bottom: 12px !important;
+}
+
+.compact-dashboard .row {
+  margin-bottom: 12px !important;
+}
+
+/* Reduce form item margins */
+.compact-form .ant-form-item {
+  margin-bottom: 12px;
+}

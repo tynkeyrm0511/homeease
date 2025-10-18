@@ -136,25 +136,22 @@ const InvoiceList = () => {
       >
         <ToastContainer position="top-right" autoClose={2200} hideProgressBar={false} newestOnTop closeOnClick pauseOnHover theme="colored" />
         <Card
+          className="compact-card"
           style={{
-            margin: 24,
             boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
             borderRadius: 12,
-            padding: 0,
             background: '#fafcff',
-            minHeight: 400,
-            paddingTop: 0,
           }}
           bodyStyle={{ padding: 0 }}
         >
-          <div style={{ padding: '24px 24px 0 24px' }}>
-            <Row gutter={[12, 12]} align="middle" wrap>
-              <Col xs={24} style={{ marginBottom: 8 }}>
-                <Typography.Title level={4} style={{ margin: 0, fontWeight: 700, color: '#2b2b2b' }}>Quản lý hóa đơn (Invoice)</Typography.Title>
+          <div className="compact-header" style={{ padding: '12px 16px 0 16px' }}>
+            <Row gutter={[8, 8]} align="middle" wrap>
+              <Col xs={24} style={{ marginBottom: 4 }}>
+                <Typography.Title level={4} style={{ margin: 0, fontWeight: 700, color: '#2b2b2b', fontSize: '1.2rem' }}>Quản lý hóa đơn</Typography.Title>
               </Col>
               <Col xs={24}>
-                <Row gutter={[16, 16]} align="middle" justify="start" wrap style={{ width: '100%' }}>
-                  <Col xs={24} sm={12} md={6} style={{ marginBottom: 8 }}>
+                <Row gutter={[8, 8]} align="middle" justify="start" wrap style={{ width: '100%' }}>
+                  <Col xs={24} sm={10} md={5} style={{ marginBottom: 4 }}>
                     <Input.Search
                       placeholder="Tìm kiếm tên cư dân, mã hóa đơn..."
                       allowClear
@@ -163,7 +160,7 @@ const InvoiceList = () => {
                       style={{ width: '100%' }}
                     />
                   </Col>
-                  <Col xs={12} sm={6} md={4} style={{ marginBottom: 8 }}>
+                  <Col xs={12} sm={6} md={3} style={{ marginBottom: 4 }}>
                     <Select
                       placeholder="Trạng thái"
                       allowClear
@@ -176,7 +173,7 @@ const InvoiceList = () => {
                       <Select.Option value="overdue">Quá hạn</Select.Option>
                     </Select>
                   </Col>
-                  <Col xs={12} sm={6} md={4} style={{ marginBottom: 8 }}>
+                  <Col xs={12} sm={6} md={3} style={{ marginBottom: 4 }}>
                     <Select
                       placeholder="Loại hóa đơn"
                       allowClear
@@ -190,7 +187,7 @@ const InvoiceList = () => {
                       <Select.Option value="parking">Gửi xe</Select.Option>
                     </Select>
                   </Col>
-                  <Col xs={12} sm={6} md={4} style={{ marginBottom: 8 }}>
+                  <Col xs={12} sm={6} md={3} style={{ marginBottom: 4 }}>
                     <Select
                       showSearch
                       placeholder="Tên cư dân"
@@ -208,7 +205,7 @@ const InvoiceList = () => {
                         ))}
                     </Select>
                   </Col>
-                  <Col xs={24} sm={12} md={6} style={{ marginBottom: 8 }}>
+                  <Col xs={24} sm={10} md={6} style={{ marginBottom: 4 }}>
                     <DatePicker.RangePicker
                       style={{ width: '100%' }}
                       value={filterDateRange}
@@ -217,19 +214,15 @@ const InvoiceList = () => {
                       placeholder={["Từ ngày", "Đến ngày"]}
                     />
                   </Col>
-                  <Col xs={24} md={6} style={{ marginBottom: 8 }}>
-                    <Row gutter={[8, 8]} align="middle" justify="start" style={{ width: '100%' }}>
-                      <Col xs={24} md={12} style={{ display: 'flex', alignItems: 'center' }}>
-                        <Checkbox checked={showOverdue} onChange={e => setShowOverdue(e.target.checked)}>
-                          Hóa đơn quá hạn
-                        </Checkbox>
-                      </Col>
-                      <Col xs={24} md={12} style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-                        <Button type="primary" onClick={() => setShowForm(true)} style={{ width: '100%' }}>
-                          Thêm hóa đơn
-                        </Button>
-                      </Col>
-                    </Row>
+                  <Col xs={12} sm={4} md={2} style={{ marginBottom: 4, display: 'flex', alignItems: 'center' }}>
+                    <Checkbox checked={showOverdue} onChange={e => setShowOverdue(e.target.checked)}>
+                      Quá hạn
+                    </Checkbox>
+                  </Col>
+                  <Col xs={12} sm={6} md={3} style={{ marginBottom: 4 }}>
+                    <Button type="primary" onClick={() => setShowForm(true)} style={{ width: '100%' }}>
+                      Thêm hóa đơn
+                    </Button>
                   </Col>
                 </Row>
               </Col>
@@ -319,66 +312,72 @@ const InvoiceList = () => {
               />
             </Modal>
           )}
-          <div style={{ padding: 24 }}>
+          <div className="compact-content" style={{ padding: 16 }}>
             {loading ? (
-              <div style={{ borderRadius: 10, background: '#fff', padding: 24, minHeight: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ borderRadius: 10, background: '#fff', padding: 16, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Spin size="large" />
               </div>
             ) : filteredInvoices.length === 0 ? (
-              <div style={{ borderRadius: 10, background: '#fff', padding: 24, minHeight: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ borderRadius: 10, background: '#fff', padding: 16, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <p>Không có hóa đơn nào.</p>
               </div>
             ) : (
-              <div style={{ borderRadius: 10, background: '#fff', padding: 0, overflowX: 'auto', position: 'relative', minHeight: 200 }}>
-                {/* Custom row style for InvoiceTable */}
-                <style>{`
-                  .invoice-row-custom td {
-                    padding-top: 6px !important;
-                    padding-bottom: 6px !important;
-                  }
-                `}</style>
-                {pageLoading && (
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    background: 'rgba(255,255,255,0.6)',
-                    zIndex: 10,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                    <Spin size="large" />
-                  </div>
-                )}
-                <InvoiceTable
-                  invoices={paginatedInvoices}
-                  onDetail={handleShowResidentDetail}
-                  renderStatus={renderStatus}
-                  onEdit={(invoice) => {
-                    setEditInvoice(invoice);
-                    setShowEditForm(true);
-                  }}
-                  onDelete={async (id) => {
-                    try {
-                      await deleteInvoice(id);
-                      toast.error('Đã xóa hóa đơn!');
-                      fetchInvoices();
-                    } catch {
-                      toast.error('Xóa hóa đơn thất bại!');
+              <div className="compact-table-container">
+                <div className="compact-table-wrapper">
+                  {/* Custom row style for InvoiceTable */}
+                  <style>{`
+                    .invoice-row-custom td {
+                      padding-top: 6px !important;
+                      padding-bottom: 6px !important;
                     }
-                  }}
-                />
+                  `}</style>
+                  {pageLoading && (
+                    <div style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      background: 'rgba(255,255,255,0.6)',
+                      zIndex: 10,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                      <Spin size="large" />
+                    </div>
+                  )}
+                  <InvoiceTable
+                    invoices={paginatedInvoices}
+                    onDetail={handleShowResidentDetail}
+                    renderStatus={renderStatus}
+                    onEdit={(invoice) => {
+                      setEditInvoice(invoice);
+                      setShowEditForm(true);
+                    }}
+                    onDelete={async (id) => {
+                      try {
+                        await deleteInvoice(id);
+                        toast.error('Đã xóa hóa đơn!');
+                        fetchInvoices();
+                      } catch {
+                        toast.error('Xóa hóa đơn thất bại!');
+                      }
+                    }}
+                    className="compact-table"
+                  />
+                </div>
                 {/* Pagination controls */}
                 {totalPages > 1 && (
-                  <PaginationControl
-                    current={currentPage}
-                    pageSize={invoicesPerPage}
-                    total={filteredInvoices.length}
-                    onChange={handlePageChange}
-                  />
+                  <div className="compact-pagination">
+                    <PaginationControl
+                      current={currentPage}
+                      pageSize={invoicesPerPage}
+                      total={filteredInvoices.length}
+                      onChange={handlePageChange}
+                      size="small"
+                    />
+                  </div>
                 )}
               </div>
             )}

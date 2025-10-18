@@ -14,6 +14,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
+import './compact-pages.css';
 
 function App() {
   return (
@@ -59,32 +60,39 @@ function AppContent() {
   return (
     <>
       <Header setCurrentView={handleTabChange} />
-      <div className="container-fluid mt-4" style={{ position: 'relative', minHeight: 300 }}>
-        {tabLoading && (
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            background: 'rgba(255,255,255,0.6)',
-            zIndex: 10,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-            <Spin size="large" />
-          </div>
-        )}
-        {!tabLoading && currentView === 'dashboard' && <Dashboard />}
-        {!tabLoading && currentView === 'residents' && <ResidentsList selectedResidentId={selectedResidentId} />}
-        {!tabLoading && currentView === 'requests' && <RequestAdminPage />}
-        {!tabLoading && currentView === 'invoices' && <InvoiceList onShowResidentDetail={(residentId) => {
-          setSelectedResidentId(residentId);
-          handleTabChange('residents');
-        }} />}
-        {!tabLoading && currentView === 'notifications' && <NotificationList />}
-      </div>
+      {!tabLoading && currentView === 'dashboard' ? (
+        // Render Dashboard without compact-layout wrapper for external scrolling
+        <div style={{ position: 'relative', paddingTop: '10px' }}>
+          <Dashboard />
+        </div>
+      ) : (
+        // Other views with compact-layout wrapper
+        <div className="compact-layout" style={{ position: 'relative' }}>
+          {tabLoading && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              background: 'rgba(255,255,255,0.6)',
+              zIndex: 10,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <Spin size="large" />
+            </div>
+          )}
+          {!tabLoading && currentView === 'residents' && <ResidentsList selectedResidentId={selectedResidentId} />}
+          {!tabLoading && currentView === 'requests' && <RequestAdminPage />}
+          {!tabLoading && currentView === 'invoices' && <InvoiceList onShowResidentDetail={(residentId) => {
+            setSelectedResidentId(residentId);
+            handleTabChange('residents');
+          }} />}
+          {!tabLoading && currentView === 'notifications' && <NotificationList />}
+        </div>
+      )}
     </>
   );
 }
