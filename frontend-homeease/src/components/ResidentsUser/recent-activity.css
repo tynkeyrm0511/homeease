@@ -1,0 +1,7 @@
+.ra-shell { margin-top: 10px }
+.ra-item { display:flex; gap:10px; align-items:center }
+.ra-icon { width:36px; height:36px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; font-size:16px }
+.ra-request { background:#eef2ff }
+.ra-invoice { background:#fff1f2 }
+.ra-content { font-size:0.95rem }
+.small-muted { color:#6b7280 }

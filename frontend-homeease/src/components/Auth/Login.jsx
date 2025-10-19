@@ -28,7 +28,7 @@ const Login = ({ onLoginSuccess }) => {
     
     if (result.success) {
       onLoginSuccess && onLoginSuccess();
-      navigate('/dashboard'); // Redirect after success
+      navigate('/'); // Let App decide where to route based on role
     } else {
       setError(result.error);
     }

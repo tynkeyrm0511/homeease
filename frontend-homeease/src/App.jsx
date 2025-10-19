@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Login from './components/Auth/Login';
 import Dashboard from './components/Dashboard';
@@ -8,6 +8,10 @@ import RequestAdminPage from './components/Requests/RequestAdminPage';
 import Header from './components/Header';
 import InvoiceList from './components/Invoices/InvoiceList';
 import NotificationList from './components/Notifications/NotificationList';
+import ResidentDashboard from './components/ResidentsUser/ResidentDashboard';
+import MyRequests from './components/ResidentsUser/MyRequests';
+import MyInvoices from './components/ResidentsUser/MyInvoices';
+import ResidentProfile from './components/ResidentsUser/ResidentProfile';
 import { Spin } from 'antd';
 import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -32,6 +36,17 @@ function AppContent() {
   const [selectedResidentId, setSelectedResidentId] = useState(null);
   const [tabLoading, setTabLoading] = useState(false);
   const { user, loading } = useAuth();
+
+  // Set initial view depending on role after login
+  useEffect(() => {
+    if (user) {
+      if (user.role === 'resident') {
+        setCurrentView('resident-dashboard');
+      } else {
+        setCurrentView('dashboard');
+      }
+    }
+  }, [user]);
 
   // Show loading while checking authentication
   if (loading) {
@@ -60,10 +75,10 @@ function AppContent() {
   return (
     <>
       <Header setCurrentView={handleTabChange} />
-      {!tabLoading && currentView === 'dashboard' ? (
-        // Render Dashboard without compact-layout wrapper for external scrolling
-        <div style={{ position: 'relative', paddingTop: '10px' }}>
-          <Dashboard />
+        {!tabLoading && (currentView === 'dashboard' || currentView === 'resident-dashboard') ? (
+        // Render Dashboard (admin view or resident-dashboard share same top-level component)
+        <div className="dashboard-wrapper" style={{ position: 'relative' }}>
+          {currentView === 'dashboard' ? <Dashboard /> : <ResidentDashboard onNavigate={handleTabChange} />}
         </div>
       ) : (
         // Other views with compact-layout wrapper
@@ -91,6 +106,9 @@ function AppContent() {
             handleTabChange('residents');
           }} />}
           {!tabLoading && currentView === 'notifications' && <NotificationList />}
+          {!tabLoading && currentView === 'my-requests' && <MyRequests />}
+          {!tabLoading && currentView === 'my-invoices' && <MyInvoices />}
+          {!tabLoading && currentView === 'profile' && <ResidentProfile />}
         </div>
       )}
     </>

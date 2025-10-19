@@ -47,7 +47,7 @@ export const createResident = (residentData) => api.post('/resident', residentDa
 export const deleteResident = (id) => api.delete(`/resident/${id}`);
 
 // --- Invoice API ---
-export const getInvoices = () => api.get('/invoice').then(res => res.data);
+export const getInvoices = (params) => api.get('/invoice', { params }).then(res => res.data);
 export const createInvoice = (invoiceData) => api.post('/invoice', invoiceData).then(res => res.data);
 export const updateInvoice = (id, invoiceData) => api.put(`/invoice/${id}`, invoiceData).then(res => res.data);
 export const deleteInvoice = (id) => api.delete(`/invoice/${id}`).then(res => res.data);
