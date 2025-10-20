@@ -56,6 +56,7 @@ export const deleteInvoice = (id) => api.delete(`/invoice/${id}`).then(res => re
 export const getRequests = (params) => api.get('/request', { params }).then(res => res.data);
 export const getRequestById = (id) => api.get(`/request/${id}`).then(res => res.data);
 export const updateRequestStatus = (id, data) => api.put(`/request/${id}`, data).then(res => res.data);
+export const createRequest = (data) => api.post('/request', data).then(res => res.data);
 
 // --- Notification API ---
 export const getNotifications = () => api.get('/notification').then(res => res.data);

@@ -1,0 +1,13 @@
+/* Scoped fixes for header visuals */
+/* Hide any search inputs that might appear inside NavBar */
+.homeease-navbar input[type="search"],
+.homeease-navbar .adm-search-bar {
+  display: none !important;
+}
+
+/* Ensure NavBar content keeps its vertical alignment */
+.homeease-navbar .adm-nav-bar-content,
+.homeease-navbar .adm-nav-bar-left,
+.homeease-navbar .adm-nav-bar-right {
+  align-items: center !important;
+}

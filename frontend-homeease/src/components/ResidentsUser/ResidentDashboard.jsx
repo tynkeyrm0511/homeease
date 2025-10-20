@@ -68,18 +68,18 @@ const ResidentDashboard = ({ onNavigate }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       <div className="sm:mx-auto sm:max-w-7xl">
-        {/* Hero Section with Animated Gradient */}
+        {/* Hero Section with Beautiful Gradient */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="relative overflow-hidden rounded-none sm:rounded-3xl sm:mx-6 sm:mt-4 bg-gradient-to-r from-violet-600 via-blue-500 to-cyan-500 animate-gradient-x pt-16 pb-4 px-4 sm:pt-6 sm:pb-6 sm:px-6 shadow-xl sm:shadow-2xl shadow-violet-500/20"
+          className="relative overflow-hidden mx-3 mt-3 rounded-2xl sm:rounded-3xl sm:mx-6 sm:mt-4 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 pt-4 pb-3 px-4 sm:pt-6 sm:pb-4 sm:px-6 shadow-xl sm:shadow-2xl shadow-purple-500/20"
         >
         <div className="relative z-10 flex items-center justify-between gap-3 sm:gap-4">
           <div className="flex items-center gap-3 sm:gap-4">
             <motion.div
               whileHover={{ scale: 1.1, rotate: 5 }}
-              className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-white/90 text-lg sm:text-xl font-bold text-violet-600 shadow-lg"
+              className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-white/90 text-lg sm:text-xl font-bold text-purple-600 shadow-lg"
             >
               {user?.name?.charAt(0) || 'U'}
             </motion.div>
@@ -90,9 +90,11 @@ const ResidentDashboard = ({ onNavigate }) => {
                 transition={{ delay: 0.2 }}
                 className="text-xl sm:text-2xl font-bold text-white"
               >
-                Chào, {user?.name || 'User'}
+                Xin chào, {user?.name || 'User'}! 👋
               </motion.h2>
-              <p className="text-xs sm:text-sm text-white/90">Tổng quan nhanh về yêu cầu và hóa đơn của bạn</p>
+              <p className="text-xs sm:text-sm text-white/90 mt-1">
+                Chúc bạn một ngày tốt lành! Dưới đây là thông tin về các yêu cầu, hóa đơn và hoạt động gần đây của bạn tại chung cư.
+              </p>
             </div>
           </div>
 
@@ -109,7 +111,7 @@ const ResidentDashboard = ({ onNavigate }) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => handleMenuClick('my-requests')}
-              className="rounded-xl bg-white/90 px-4 py-2 text-sm font-semibold text-violet-600 transition-all hover:bg-white"
+              className="rounded-xl bg-white/90 px-4 py-2 text-sm font-semibold text-purple-600 transition-all hover:bg-white"
             >
               Xem yêu cầu
             </motion.button>
@@ -117,18 +119,18 @@ const ResidentDashboard = ({ onNavigate }) => {
         </div>
 
         {/* Mobile CTAs */}
-        <div className="mt-4 flex gap-2 sm:hidden">
+        <div className="mt-3 flex gap-2 sm:hidden">
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => handleMenuClick('create-request')}
-            className="glass flex-1 rounded-xl px-4 py-2 text-sm font-medium text-white"
+            className="glass flex-1 rounded-xl px-4 py-2.5 text-sm font-medium text-white"
           >
             Tạo mới
           </motion.button>
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => handleMenuClick('my-requests')}
-            className="flex-1 rounded-xl bg-white/90 px-4 py-2 text-sm font-semibold text-violet-600"
+            className="flex-1 rounded-xl bg-white/90 px-4 py-2.5 text-sm font-semibold text-purple-600"
           >
             Xem yêu cầu
           </motion.button>
@@ -137,7 +139,7 @@ const ResidentDashboard = ({ onNavigate }) => {
 
       {/* Stats Grid */}
       <div className="px-3 sm:px-6">
-      <div className="mt-4 sm:mt-6 grid gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-3 sm:mt-6 grid gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {/* Requests Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

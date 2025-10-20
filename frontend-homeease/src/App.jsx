@@ -12,6 +12,7 @@ import ResidentDashboard from './components/ResidentsUser/ResidentDashboard';
 import MyRequests from './components/ResidentsUser/MyRequests';
 import MyInvoices from './components/ResidentsUser/MyInvoices';
 import ResidentProfile from './components/ResidentsUser/ResidentProfile';
+import CreateRequest from './components/ResidentsUser/CreateRequest';
 import { Spin } from 'antd';
 import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -74,7 +75,7 @@ function AppContent() {
   // Main app for authenticated users
   return (
     <>
-      <Header setCurrentView={handleTabChange} />
+  <Header setCurrentView={handleTabChange} currentView={currentView} />
         {!tabLoading && (currentView === 'dashboard' || currentView === 'resident-dashboard') ? (
         // Render Dashboard (admin view or resident-dashboard share same top-level component)
         <div className="dashboard-wrapper" style={{ position: 'relative' }}>
@@ -106,8 +107,9 @@ function AppContent() {
             handleTabChange('residents');
           }} />}
           {!tabLoading && currentView === 'notifications' && <NotificationList />}
-          {!tabLoading && currentView === 'my-requests' && <MyRequests />}
-          {!tabLoading && currentView === 'my-invoices' && <MyInvoices />}
+          {!tabLoading && currentView === 'my-requests' && <MyRequests onNavigate={handleTabChange} />}
+            {!tabLoading && currentView === 'my-invoices' && <MyInvoices />}
+            {!tabLoading && currentView === 'create-request' && <CreateRequest onNavigate={handleTabChange} />}
           {!tabLoading && currentView === 'profile' && <ResidentProfile />}
         </div>
       )}
