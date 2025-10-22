@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { io } from 'socket.io-client';
+import { message } from 'antd';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Login from './components/Auth/Login';
 import Dashboard from './components/Dashboard';
@@ -15,6 +17,8 @@ import ResidentProfile from './components/ResidentsUser/ResidentProfile';
 import CreateRequest from './components/ResidentsUser/CreateRequest';
 import { Spin } from 'antd';
 import { ToastContainer } from 'react-toastify';
+import InvoiceDetail from './components/Invoices/InvoiceDetail';
+import PayInvoice from './components/Invoices/PayInvoice';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'react-toastify/dist/ReactToastify.css';
@@ -35,6 +39,7 @@ function App() {
 function AppContent() {
   const [currentView, setCurrentView] = useState('dashboard');
   const [selectedResidentId, setSelectedResidentId] = useState(null);
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [tabLoading, setTabLoading] = useState(false);
   const { user, loading } = useAuth();
 
@@ -48,6 +53,22 @@ function AppContent() {
       }
     }
   }, [user]);
+
+  // Socket.io: listen for invoice paid events
+  useEffect(() => {
+    if (!user) return;
+    const socket = io(import.meta.env.VITE_WS_URL || 'http://localhost:3000');
+    socket.on('connect', () => console.log('socket connected', socket.id));
+    socket.on('invoice:paid', (data) => {
+      console.log('invoice:paid', data);
+      message.success(`Hoàn tất thanh toán hóa đơn #${data.invoiceId}`);
+      // For demo simplicity, reload page to refresh lists when payment occurs
+      if (currentView === 'my-invoices' || currentView === 'invoices' || currentView === 'invoice-detail') {
+        setTimeout(() => window.location.reload(), 600);
+      }
+    });
+    return () => { socket.disconnect(); };
+  }, [user, currentView]);
 
   // Show loading while checking authentication
   if (loading) {
@@ -71,6 +92,16 @@ function AppContent() {
       setTabLoading(false);
     }, 400); // loading 400ms cho cảm giác mượt
   };
+
+  // Expose helper to show invoice or navigate to pay
+  const handleShowInvoice = (inv, options = {}) => {
+    setSelectedInvoice(inv)
+    if (options?.pay) {
+      handleTabChange('pay-invoice')
+    } else {
+      handleTabChange('invoice-detail')
+    }
+  }
 
   // Main app for authenticated users
   return (
@@ -108,7 +139,9 @@ function AppContent() {
           }} />}
           {!tabLoading && currentView === 'notifications' && <NotificationList />}
           {!tabLoading && currentView === 'my-requests' && <MyRequests onNavigate={handleTabChange} />}
-            {!tabLoading && currentView === 'my-invoices' && <MyInvoices />}
+            {!tabLoading && currentView === 'my-invoices' && <MyInvoices onShowInvoice={(inv) => handleShowInvoice(inv)} />}
+            {!tabLoading && currentView === 'invoice-detail' && <InvoiceDetail invoice={selectedInvoice} onPay={() => { handleTabChange('pay-invoice'); }} onBack={() => handleTabChange('my-invoices')} />}
+            {!tabLoading && currentView === 'pay-invoice' && <PayInvoice invoice={selectedInvoice} onBack={() => handleTabChange('invoice-detail')} />}
             {!tabLoading && currentView === 'create-request' && <CreateRequest onNavigate={handleTabChange} />}
           {!tabLoading && currentView === 'profile' && <ResidentProfile />}
         </div>

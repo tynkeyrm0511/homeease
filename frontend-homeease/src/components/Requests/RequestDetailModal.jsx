@@ -11,10 +11,7 @@ const statusOptions = [
   { value: 'rejected', label: 'Từ chối' },
 ];
 
-const statusLabel = (status) => {
-  const found = statusOptions.find(opt => opt.value === status);
-  return found ? found.label : status;
-};
+
 
 const RequestDetailModal = ({ open, onClose, request, onStatusChange, onSave, loading }) => {
   if (!request) return null;
@@ -23,7 +20,9 @@ const RequestDetailModal = ({ open, onClose, request, onStatusChange, onSave, lo
   if (createdAt && createdAt.length > 10) {
     try {
       createdAt = new Date(createdAt).toLocaleDateString();
-    } catch {}
+    } catch (e) {
+      console.warn('RequestDetailModal: createdAt parse failed', e);
+    }
   }
   // Lấy tên người gửi
   const sender = request.user?.name || request.sender || 'N/A';

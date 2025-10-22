@@ -1,7 +1,12 @@
 // src/contexts/AuthContext.jsx
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from 'react';
 import api from '../services/api';
 
+/*
+  Note: react-refresh rule can complain when files export non-component values alongside components.
+  We keep this file focused and ensure we export the provider as default and named hooks only.
+*/
 export const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -25,6 +30,7 @@ export const AuthProvider = ({ children }) => {
           const response = await api.get('/auth/verify');
           setUser(response.data.user);
         } catch (error) {
+          console.warn('verifyToken failed', error);
           localStorage.removeItem('token');
           setToken(null);
         }

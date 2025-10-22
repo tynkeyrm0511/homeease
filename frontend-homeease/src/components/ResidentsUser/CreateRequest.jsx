@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { Form, Input, Button, Toast, Selector } from 'antd-mobile'
+import { Form, Input, Button, Selector } from 'antd-mobile'
+import { message } from 'antd'
 import { createRequest } from '../../services/api'
 
 const categories = [
@@ -14,15 +15,15 @@ const CreateRequest = ({ onNavigate }) => {
   const onFinish = async (values) => {
     try {
       if (!values.category || !values.description) {
-        Toast.show({ content: 'Vui lòng điền đầy đủ thông tin' })
+        message.error('Vui lòng điền đầy đủ thông tin')
         return
       }
       setSubmitting(true)
       await createRequest(values)
-      Toast.show({ content: 'Gửi yêu cầu thành công' })
+      message.success('Gửi yêu cầu thành công')
       if (onNavigate) onNavigate('my-requests')
     } catch {
-      Toast.show({ content: 'Gửi thất bại' })
+      message.error('Gửi thất bại')
     } finally {
       setSubmitting(false)
     }

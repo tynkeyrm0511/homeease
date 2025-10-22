@@ -47,6 +47,10 @@ model Invoice {
   paidAt     DateTime?
   userId     Int
   user       User     @relation(fields: [userId], references: [id])
+  // Payment mock fields
+  paymentSessionId    String?  @unique
+  paymentStatus       String?  @default("pending")
+  paymentTransactionId String?
 }
 
 model Request {

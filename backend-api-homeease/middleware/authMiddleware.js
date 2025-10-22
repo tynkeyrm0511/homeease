@@ -14,7 +14,11 @@ const authMiddleware = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log('Auth check - Decoded user:', decoded);
+    // Normalize token payload: some code expects `req.user.id` while tokens contain `userId`
     req.user = decoded;
+    if (!req.user.id && req.user.userId) {
+      req.user.id = req.user.userId;
+    }
     next();
   } catch (error) {
     console.log('Auth check - Invalid token:', error.message);

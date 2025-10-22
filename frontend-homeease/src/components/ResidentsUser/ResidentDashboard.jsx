@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../../contexts/AuthContext'
 import { getRequests, getInvoices } from '../../services/api'
-import { PullToRefresh, Toast } from 'antd-mobile'
+import { PullToRefresh } from 'antd-mobile'
+import { message } from 'antd'
 import CountUp from 'react-countup'
+/* eslint-disable-next-line no-unused-vars */
 import { motion } from 'framer-motion'
 import RecentActivity from './RecentActivity'
 
@@ -37,7 +39,7 @@ const ResidentDashboard = ({ onNavigate }) => {
       setInvoicesCount(due)
     } catch (err) {
       console.error('Failed to fetch resident counts', err)
-      Toast.show({ content: 'Không thể tải dữ liệu. Vui lòng thử lại.' })
+      message.error('Không thể tải dữ liệu. Vui lòng thử lại.')
     } finally {
       setLoading(false)
     }
@@ -67,7 +69,8 @@ const ResidentDashboard = ({ onNavigate }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      <div className="sm:mx-auto sm:max-w-7xl">
+      <PullToRefresh onRefresh={onRefresh} refreshing={refreshing}>
+        <div className="sm:mx-auto sm:max-w-7xl">
         {/* Hero Section with Beautiful Gradient */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -103,6 +106,7 @@ const ResidentDashboard = ({ onNavigate }) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => handleMenuClick('create-request')}
+              aria-label="Tạo yêu cầu mới"
               className="glass rounded-xl px-4 py-2 text-sm font-medium text-white transition-all hover:bg-white/20"
             >
               Tạo mới
@@ -111,6 +115,7 @@ const ResidentDashboard = ({ onNavigate }) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => handleMenuClick('my-requests')}
+              aria-label="Xem yêu cầu của tôi"
               className="rounded-xl bg-white/90 px-4 py-2 text-sm font-semibold text-purple-600 transition-all hover:bg-white"
             >
               Xem yêu cầu
@@ -123,6 +128,7 @@ const ResidentDashboard = ({ onNavigate }) => {
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => handleMenuClick('create-request')}
+            aria-label="Tạo yêu cầu mới"
             className="glass flex-1 rounded-xl px-4 py-2.5 text-sm font-medium text-white"
           >
             Tạo mới
@@ -130,6 +136,7 @@ const ResidentDashboard = ({ onNavigate }) => {
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => handleMenuClick('my-requests')}
+            aria-label="Xem yêu cầu của tôi"
             className="flex-1 rounded-xl bg-white/90 px-4 py-2.5 text-sm font-semibold text-purple-600"
           >
             Xem yêu cầu
@@ -255,8 +262,8 @@ const ResidentDashboard = ({ onNavigate }) => {
       </motion.div>
       </div>
 
-      <PullToRefresh onRefresh={onRefresh} refreshing={refreshing} />
-      </div>
+        </div>
+      </PullToRefresh>
     </div>
   )
 }

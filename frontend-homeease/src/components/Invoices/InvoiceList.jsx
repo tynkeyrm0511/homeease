@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Card, Modal, Button, Input, Spin, message, ConfigProvider, Select, DatePicker, Row, Col, Typography } from 'antd';
+import { Card, Modal, Button, Input, Spin, ConfigProvider, Select, DatePicker, Row, Col, Typography } from 'antd';
 import { Checkbox } from 'antd';
 import { getInvoices, createInvoice, updateInvoice, deleteInvoice } from '../../services/api';
 import InvoiceTable from './InvoiceTable';
@@ -55,7 +55,9 @@ const InvoiceList = () => {
     try {
       const data = await getResidents();
       setResidentOptions(data.map(r => ({ id: r.id, name: r.name })));
-    } catch {}
+    } catch (e) {
+      console.error('fetchResidents failed', e);
+    }
   };
 
   // Resident detail modal handler

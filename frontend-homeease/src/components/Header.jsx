@@ -197,9 +197,10 @@ const Header = ({ setCurrentView }) => {
 
   return (
     <>
-      {typeof document !== 'undefined' ? createPortal(portalContent, document.body) : portalContent}
+  {typeof document !== 'undefined' ? createPortal(portalContent, document.body) : portalContent}
 
-      <div style={{ height: '64px' }} />
+  {/* reserve space for navbar so page content doesn't jump */}
+  <div style={{ height: '64px', pointerEvents: 'none' }} />
 
       <Popup
         visible={mobileMenuOpen}

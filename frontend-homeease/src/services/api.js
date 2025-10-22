@@ -51,6 +51,10 @@ export const getInvoices = (params) => api.get('/invoice', { params }).then(res 
 export const createInvoice = (invoiceData) => api.post('/invoice', invoiceData).then(res => res.data);
 export const updateInvoice = (id, invoiceData) => api.put(`/invoice/${id}`, invoiceData).then(res => res.data);
 export const deleteInvoice = (id) => api.delete(`/invoice/${id}`).then(res => res.data);
+// Mock Payment API
+export const createPaymentSession = (invoiceId) => api.post(`/invoice/${invoiceId}/create-payment`).then(res => res.data);
+export const getInvoicePaymentStatus = (invoiceId) => api.get(`/invoice/${invoiceId}/payment-status`).then(res => res.data);
+export const confirmMockPayment = (sessionId) => api.post(`/invoice/mock-pay/${sessionId}/confirm`).then(res => res.data);
 
 // --- Request API ---
 export const getRequests = (params) => api.get('/request', { params }).then(res => res.data);

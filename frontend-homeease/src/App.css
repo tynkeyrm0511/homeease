@@ -196,6 +196,90 @@ html, body {
     min-width: 600px;
   }
 }
+/* Compact card/table used for mobile resident views */
+.compact-card {
+  border-radius: 12px;
+  overflow: hidden;
+  /* make card responsive to viewport so inner scroll can fill available space */
+  max-height: calc(100vh - 120px);
+}
+.compact-card .ant-card-body {
+  padding: 10px !important;
+}
+.compact-card h3 { padding-left: 4px; }
+.compact-card .ant-card { border-radius: 12px; }
+.compact-card .ant-tag {
+  font-weight: 600;
+  padding: 0 8px;
+  border-radius: 999px;
+}
+
+/* Layout helpers for invoice scrolling inside compact card */
+.compact-card {
+  display: flex;
+  flex-direction: column;
+}
+.compact-card .ant-card-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0 !important;
+}
+.invoices-scroll {
+  /* allow the scroll area to shrink properly in flex containers */
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 28px; /* ensure last card not cut off */
+  -webkit-overflow-scrolling: touch;
+}
+.scrollable-invoices { /* backwards compat if used elsewhere */
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* invoice compact card styles */
+.invoice-compact-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 14px;
+  box-shadow: 0 6px 18px rgba(15,23,42,0.06);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.invoice-compact-card:focus,
+.invoice-compact-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 36px rgba(15,23,42,0.08);
+  outline: none;
+}
+.invoice-compact-card button { font-size: 14px; }
+.compact-card { background: linear-gradient(180deg, #ffffff, #fbfbfd); }
+.compact-card .ant-card-body { box-shadow: none; }
+.compact-card .compact-header-accent { height: 6px; background: linear-gradient(90deg,#6366f1,#06b6d4); border-radius: 6px; margin-bottom: 8px; }
+.compact-table-container {
+  position: relative;
+}
+.compact-table-wrapper {
+  overflow: hidden;
+}
+.compact-table .ant-table {
+  border-radius: 8px;
+}
+/* Reduce table min width on very small screens to avoid excessive horizontal scroll */
+@media (max-width: 420px) {
+  .resident-table, .compact-table .ant-table, .notification-table-custom .ant-table {
+    min-width: 320px !important;
+  }
+  .compact-card { padding-left: 6px; padding-right: 6px; }
+}
+/* Improve mobile touch scroll for invoices list */
+.scrollable-invoices {
+  -webkit-overflow-scrolling: touch;
+}
+.scrollable-invoices .ant-card {
+  margin-bottom: 12px;
+}
 /* Pagination Ant Design theme override */
 .ant-pagination-item-active {
   border-color: var(--primary) !important;
@@ -207,6 +291,66 @@ html, body {
 .ant-pagination-item-active:active,
 .ant-pagination-item-active:hover {
   border-color: var(--primary-hover) !important;
+}
+
+/* Pay button styling to match app theme */
+.btn-pay {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: #fff !important;
+}
+.btn-pay:hover, .btn-pay:focus {
+  background: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
+  color: #fff !important;
+}
+
+/* Gradient pay button to match header */
+.btn-pay {
+  background: linear-gradient(90deg,#5b21b6,#3b82f6) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 6px 18px rgba(59,130,246,0.12);
+}
+.btn-pay:hover, .btn-pay:focus {
+  filter: brightness(0.95) !important;
+  transform: translateY(-1px);
+}
+
+/* Mobile compact pay button */
+.btn-pay-mobile {
+  padding: 6px 10px !important;
+  font-size: 13px !important;
+  border-radius: 9999px !important;
+  height: auto !important;
+  line-height: 1 !important;
+}
+
+/* Icon-only pay button sizing */
+.btn-pay.btn-pay-icon {
+  padding: 6px !important;
+  width: 36px !important;
+  height: 36px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+}
+
+@media (max-width: 640px) {
+  .btn-pay.btn-pay-icon {
+    width: 40px !important;
+    height: 40px !important;
+    padding: 6px !important;
+    border-radius: 9999px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .invoice-compact-card .btn-pay-mobile {
+    padding: 6px 12px !important;
+    font-size: 13px !important;
+  }
 }
 /* Nút hành động cho ResidentsList */
 .resident-action-btn {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { PullToRefresh, Toast, Button } from 'antd-mobile'
+import { PullToRefresh, Button } from 'antd-mobile'
+import { message } from 'antd'
 import { getRequests, getRequestById, updateRequestStatus } from '../../services/api'
 import RequestDetailModal from '../Requests/RequestDetailModal'
 
@@ -16,7 +17,7 @@ const MyRequests = ({ onNavigate }) => {
       // Filter client-side by current user if API doesn't already scope
       setRequests(Array.isArray(data) ? data : data?.data || [])
     } catch {
-      Toast.show({ content: 'Không thể tải yêu cầu' })
+      message.error('Không thể tải yêu cầu')
     } finally {
       setLoading(false)
     }
@@ -38,19 +39,19 @@ const MyRequests = ({ onNavigate }) => {
       const detail = await getRequestById(id)
       setSelected(detail)
     } catch {
-      Toast.show({ content: 'Không thể mở chi tiết' })
+      message.error('Không thể mở chi tiết')
     }
   }
 
   const handleCancel = async (id) => {
     try {
       await updateRequestStatus(id, { status: 'cancelled' })
-      Toast.show({ content: 'Đã hủy yêu cầu' })
+      message.success('Đã hủy yêu cầu')
       // remove from list or refetch
       setRequests(prev => prev.filter(r => r.id !== id))
       setSelected(null)
     } catch {
-      Toast.show({ content: 'Hủy thất bại' })
+      message.error('Hủy thất bại')
     }
   }
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { getRequests, getInvoices } from '../../services/api'
-import { List, Toast } from 'antd-mobile'
+import { List } from 'antd-mobile'
+import { message } from 'antd'
 import './recent-activity.css'
 
 const timeAgo = (dateStr) => {
@@ -51,7 +52,7 @@ const RecentActivity = ({ userId }) => {
         setItems(normalized.slice(0,6))
       } catch (err) {
         console.error(err)
-        Toast.show({ content: 'Không thể tải hoạt động gần đây' })
+        message.error('Không thể tải hoạt động gần đây')
       } finally {
         setLoading(false)
       }
