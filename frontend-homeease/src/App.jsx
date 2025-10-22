@@ -79,7 +79,7 @@ function AppContent() {
         {!tabLoading && (currentView === 'dashboard' || currentView === 'resident-dashboard') ? (
         // Render Dashboard (admin view or resident-dashboard share same top-level component)
         <div className="dashboard-wrapper" style={{ position: 'relative' }}>
-          {currentView === 'dashboard' ? <Dashboard /> : <ResidentDashboard onNavigate={handleTabChange} />}
+          {currentView === 'dashboard' ? <Dashboard setCurrentView={handleTabChange} /> : <ResidentDashboard onNavigate={handleTabChange} />}
         </div>
       ) : (
         // Other views with compact-layout wrapper

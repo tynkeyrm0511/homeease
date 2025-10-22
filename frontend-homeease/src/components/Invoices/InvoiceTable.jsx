@@ -54,22 +54,14 @@ const getColumns = (onDetail, onEdit, onDelete) => [
 ];
 
 
-const getPageSize = () => {
-  if (typeof window !== 'undefined') {
-    if (window.innerHeight < 700) return 5;
-    return 6;
-  }
-  return 6;
-};
 
-const InvoiceTable = ({ invoices, onDetail, renderStatus, onEdit, onDelete }) => {
-  const pageSize = getPageSize();
+const InvoiceTable = ({ invoices, onDetail, onEdit, onDelete }) => {
   return (
     <Table
       columns={getColumns(onDetail, onEdit, onDelete)}
       dataSource={invoices}
       rowKey="id"
-      pagination={invoices.length > pageSize+2 ? { pageSize, position: ['bottomCenter'] } : false}
+      pagination={false} // handled externally by InvoiceList
       scroll={{ x: 'max-content' }}
       style={{ fontSize: '0.97rem', background: '#fff', width: '100%' }}
       rowClassName={() => 'invoice-row-custom'}

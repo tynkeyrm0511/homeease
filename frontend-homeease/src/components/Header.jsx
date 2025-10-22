@@ -6,7 +6,7 @@ import '../header-fix.css'
 import { createPortal } from 'react-dom'
 import { MdDashboard, MdRequestPage, MdPayment, MdNotifications, MdPerson, MdPeople, MdLogout, MdClose } from 'react-icons/md'
 
-const Header = ({ setCurrentView, currentView }) => {
+const Header = ({ setCurrentView }) => {
   const { user, logout } = useContext(AuthContext)
   const [showDropdown, setShowDropdown] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -138,7 +138,7 @@ const Header = ({ setCurrentView, currentView }) => {
         onBack={null}
         style={{
           '--height': '64px',
-          background: isResident ? 'linear-gradient(90deg,#4f46e5,#06b6d4)' : '#fff',
+          background: isResident ? 'linear-gradient(90deg,#4f46e5,#06b6d4)' : 'linear-gradient(90deg,#5b21b6,#3b82f6)',
           '--border-bottom': '1px solid rgba(255,255,255,0.1)',
           position: 'relative',
           top: 0,
@@ -161,16 +161,23 @@ const Header = ({ setCurrentView, currentView }) => {
           </div>
         )}
       >
-        <div style={{
-          fontWeight: 700,
-          fontSize: isResident ? '20px' : '18px',
-          color: '#fff',
-          letterSpacing: '0.5px',
-          textShadow: '0 2px 8px rgba(0,0,0,0.2)',
-          position: 'relative',
-          zIndex: 4100,
-          pointerEvents: 'auto'
-        }}>
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => handleMenuClick('dashboard')}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleMenuClick('dashboard') } }}
+          style={{
+            fontWeight: 700,
+            fontSize: isResident ? '20px' : '18px',
+            color: '#fff',
+            letterSpacing: '0.5px',
+            textShadow: '0 2px 8px rgba(0,0,0,0.2)',
+            position: 'relative',
+            zIndex: 4100,
+            pointerEvents: 'auto',
+            cursor: 'pointer'
+          }}
+        >
           HomeEase
         </div>
       </NavBar>

@@ -92,7 +92,7 @@ const ResidentTable = ({ residents, onEdit, onDelete, onDetail, renderStatus }) 
     columns={getColumns(onEdit, onDelete, onDetail, renderStatus)}
     dataSource={residents}
     rowKey="id"
-    pagination={{ pageSize: 10 }}
+    pagination={false} // pagination handled externally by ResidentsList
     scroll={{ x: 900 }}
     style={{ 
       fontSize: '0.97rem', 
