@@ -6,6 +6,29 @@ import '../header-fix.css'
 import { createPortal } from 'react-dom'
 import { MdDashboard, MdRequestPage, MdPayment, MdNotifications, MdPerson, MdPeople, MdLogout, MdClose } from 'react-icons/md'
 
+// Hook: lock body scroll and compensate for scrollbar width when `open` is true
+function useLockBodyScrollWhen(open) {
+  // useEffect is available from React import above
+  React.useEffect(() => {
+    const body = typeof document !== 'undefined' ? document.body : null
+    if (!body) return
+    const originalOverflow = body.style.overflow
+    const originalPaddingRight = body.style.paddingRight
+    if (open) {
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+      body.style.overflow = 'hidden'
+      if (scrollbarWidth > 0) body.style.paddingRight = `${scrollbarWidth}px`
+    } else {
+      body.style.overflow = originalOverflow || ''
+      body.style.paddingRight = originalPaddingRight || ''
+    }
+    return () => {
+      body.style.overflow = originalOverflow || ''
+      body.style.paddingRight = originalPaddingRight || ''
+    }
+  }, [open])
+}
+
 const Header = ({ setCurrentView }) => {
   const { user, logout } = useContext(AuthContext)
   const [showDropdown, setShowDropdown] = useState(false)
@@ -41,6 +64,8 @@ const Header = ({ setCurrentView }) => {
   ]
 
   const isResident = user?.role === 'resident'
+  // lock body scroll when mobile menu is open to prevent layout shift
+  useLockBodyScrollWhen(mobileMenuOpen)
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -99,6 +124,10 @@ const Header = ({ setCurrentView }) => {
 
   useEffect(() => {
     try {
+      // Only run this automatic hiding in development when explicitly requested via URL param
+      const params = new URLSearchParams(window.location.search)
+      const dbg = params.get('debugHeader')
+      if (!dbg) return
       if (import.meta.env && import.meta.env.MODE === 'production') return
       const timer = setTimeout(() => {
         const nav = document.querySelector('.homeease-navbar') || document.querySelector('.adm-nav-bar')
@@ -137,17 +166,20 @@ const Header = ({ setCurrentView }) => {
         back={null}
         onBack={null}
         style={{
+          display: mobileMenuOpen ? 'none' : 'flex',
           '--height': '64px',
+          alignItems: 'center',
           background: isResident ? 'linear-gradient(90deg,#4f46e5,#06b6d4)' : 'linear-gradient(90deg,#5b21b6,#3b82f6)',
           '--border-bottom': '1px solid rgba(255,255,255,0.1)',
           position: 'relative',
           top: 0,
           left: 0,
           right: 0,
-          zIndex: 4000
+          zIndex: 4000,
+          paddingRight: 120
         }}
         right={(
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14, minWidth: 120, justifyContent: 'flex-end' }}>
+          <div className="header-right" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', display: 'flex', alignItems: 'center', gap: 14, minWidth: 120, justifyContent: 'flex-end', zIndex: 4200 }}>
             <Button type="text" onClick={() => setMobileMenuOpen(true)} aria-label="Mở menu" style={{ padding: 0, color: '#fff', marginRight: 6, zIndex: 4200 }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M3 6H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -162,6 +194,7 @@ const Header = ({ setCurrentView }) => {
         )}
       >
         <div
+          className="header-title"
           role="button"
           tabIndex={0}
           onClick={() => handleMenuClick('dashboard')}
@@ -172,10 +205,16 @@ const Header = ({ setCurrentView }) => {
             color: '#fff',
             letterSpacing: '0.5px',
             textShadow: '0 2px 8px rgba(0,0,0,0.2)',
-            position: 'relative',
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
             zIndex: 4100,
             pointerEvents: 'auto',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
           }}
         >
           HomeEase
@@ -199,14 +238,15 @@ const Header = ({ setCurrentView }) => {
     <>
   {typeof document !== 'undefined' ? createPortal(portalContent, document.body) : portalContent}
 
-  {/* reserve space for navbar so page content doesn't jump */}
-  <div style={{ height: '64px', pointerEvents: 'none' }} />
-
+  {/* reserve space for navbar so page content doesn't jump; hide spacer when mobile menu open to avoid stray top stripe */}
+  <div style={{ height: mobileMenuOpen ? 0 : '64px', pointerEvents: 'none', transition: 'height 120ms' }} />
       <Popup
         visible={mobileMenuOpen}
         onMaskClick={() => setMobileMenuOpen(false)}
         position="left"
-        bodyStyle={{ width: '82%', maxWidth: 360, padding: 0, background: 'linear-gradient(to bottom, #f8fafc, #ffffff)' }}
+        // ensure popup overlays the NavBar
+        style={{ top: 0, zIndex: 50000 }}
+        bodyStyle={{ width: '82%', maxWidth: 360, padding: 0, paddingTop: 0, height: '100%', boxSizing: 'border-box', background: 'linear-gradient(to bottom, #f8fafc, #ffffff)' }}
       >
         {/* Header */}
         <div style={{ 

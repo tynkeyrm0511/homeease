@@ -87,6 +87,13 @@ homeease/
 ## 📊 Tiến độ dự án
 
 -
+## 🔔 Recent updates (2025-10-23)
+
+- Header layout: centered "HomeEase" title and right-aligned burger + avatar. Added body scroll-lock and scrollbar compensation while the mobile menu/popup is open to prevent layout shift across viewports.
+- Mock QR payment demo: resident-facing QR flow that creates a mock payment session, displays a QR, polls for payment status and allows a click-to-confirm demo. Backend emits `invoice:paid` via Socket.IO so admins see updates in real-time.
+- Admin list: adjusted invoice table to show resident names and hide the Pay action for admin users.
+- Dev notes: a development bypass (`SKIP_OWNER_CHECK`) and transient debug logs were used during testing — remove or disable these before production.
+
 ### Backend ✅ (Hoàn thành)
 - [x] API cho quản lý cư dân
 - [x] API cho quản lý yêu cầu dịch vụ (Request): CRUD, phân trang, filter, cập nhật trạng thái, phân quyền
@@ -125,11 +132,13 @@ homeease/
 - [x] Hệ thống thông báo
 - [~] Biểu đồ & thống kê
 - [ ] Tối ưu responsive
+- [~] UI polish: header/layout fixes and mobile menu behavior (in progress)
 
 #### Phase 5: Hoàn thiện & Triển khai 🔄
 - [ ] Cải thiện UI/UX
 - [ ] Kiểm thử
 - [ ] Build & deploy
+- [ ] Remove dev-only bypasses and debug logs
 
 ## 📮 Liên hệ
 

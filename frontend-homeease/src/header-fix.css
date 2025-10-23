@@ -11,3 +11,48 @@
 .homeease-navbar .adm-nav-bar-right {
   align-items: center !important;
 }
+
+/* Stronger centering rules to fix misalignment across viewports */
+.homeease-navbar {
+  height: 64px !important;
+  align-items: center !important;
+  padding: 0 12px !important;
+}
+
+.homeease-navbar .adm-nav-bar-left,
+.homeease-navbar .adm-nav-bar-right,
+.homeease-navbar .adm-nav-bar-content {
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Ensure title is visually centered and right controls sit on the right */
+.homeease-navbar {
+  position: relative !important;
+}
+
+.homeease-navbar .header-title {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  pointer-events: auto !important;
+  z-index: 4100 !important;
+}
+
+.homeease-navbar .header-right {
+  position: absolute !important;
+  right: 16px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  display: flex !important;
+  gap: 12px !important;
+  align-items: center !important;
+  z-index: 4200 !important;
+}
+
+/* Reserve scrollbar space to help avoid layout shift when popup opens */
+html {
+  scrollbar-gutter: stable;
+}

@@ -4,9 +4,11 @@ import dayjs from 'dayjs';
 import { Table, Tag, Button } from 'antd';
 import { QrcodeOutlined } from '@ant-design/icons';
 
-const getColumns = (onDetail, isDesktop = false) => {
+const getColumns = (onDetail, isDesktop = false, isAdmin = false) => {
   const base = [
     { title: 'Mã hóa đơn', dataIndex: 'id', key: 'id', width: 80 },
+    // show resident name for admin to have full context
+    ...(isAdmin ? [{ title: 'Cư dân', dataIndex: ['user','name'], key: 'userName', width: 200, render: (name, record) => record.user?.name || '' }] : []),
     { title: 'Số tiền', dataIndex: 'amount', key: 'amount', width: 160,
       render: (amount) => `${amount?.toLocaleString()} VNĐ` },
     { title: 'Loại hóa đơn', dataIndex: 'type', key: 'type', width: 140,
@@ -29,7 +31,7 @@ const getColumns = (onDetail, isDesktop = false) => {
   ];
 
   // On non-desktop we include more small columns; on desktop we can simplify
-  if (!isDesktop) {
+  if (!isDesktop || isAdmin) {
     base.push({ title: 'Ngày tạo', dataIndex: 'createdAt', key: 'createdAt', width: 120,
       render: (date) => date ? dayjs(date).format('DD/MM/YYYY') : '' })
   }
@@ -39,21 +41,23 @@ const getColumns = (onDetail, isDesktop = false) => {
         render: (date) => date ? dayjs(date).format('DD/MM/YYYY') : '' }
   )
 
-  // Add a lightweight Pay action column (keeps table compact; clicking row also opens detail)
-  base.push({ title: 'Thanh toán', dataIndex: 'pay', key: 'pay', width: 120, render: (_, record) => (
-    isDesktop ? (
-      <Button className="btn-pay" type="primary" size="small" icon={<QrcodeOutlined />} aria-label="Thanh toán" title="Thanh toán" onClick={(e) => { e.stopPropagation(); if (record && typeof record._onPay === 'function') record._onPay(record); }}>Thanh toán</Button>
-    ) : (
-      <Button className="btn-pay btn-pay-icon" type="primary" size="small" icon={<QrcodeOutlined />} aria-label="Thanh toán" title="Thanh toán" onClick={(e) => { e.stopPropagation(); if (record && typeof record._onPay === 'function') record._onPay(record); }} />
-    )
-  )})
+  // Add a lightweight Pay action column for non-admin users
+  if (!isAdmin) {
+    base.push({ title: 'Thanh toán', dataIndex: 'pay', key: 'pay', width: 120, render: (_, record) => (
+      isDesktop ? (
+        <Button className="btn-pay" type="primary" size="small" icon={<QrcodeOutlined />} aria-label="Thanh toán" title="Thanh toán" onClick={(e) => { e.stopPropagation(); if (record && typeof record._onPay === 'function') record._onPay(record); }}>Thanh toán</Button>
+      ) : (
+        <Button className="btn-pay btn-pay-icon" type="primary" size="small" icon={<QrcodeOutlined />} aria-label="Thanh toán" title="Thanh toán" onClick={(e) => { e.stopPropagation(); if (record && typeof record._onPay === 'function') record._onPay(record); }} />
+      )
+    )})
+  }
 
   return base
 }
 
 
 
-const InvoiceTable = ({ invoices, onDetail, compactOnMobile = false, renderStatus, onInvoiceClick }) => {
+const InvoiceTable = ({ invoices, onDetail, compactOnMobile = false, renderStatus, onInvoiceClick, isAdmin = false }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
 
@@ -122,7 +126,7 @@ const InvoiceTable = ({ invoices, onDetail, compactOnMobile = false, renderStatu
 
   return (
     <Table
-      columns={getColumns(onDetail, isDesktop)}
+      columns={getColumns(onDetail, isDesktop, isAdmin)}
       dataSource={invoices}
       rowKey="id"
       pagination={false} // handled externally by InvoiceList

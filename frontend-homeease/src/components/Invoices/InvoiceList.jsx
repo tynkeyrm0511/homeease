@@ -353,6 +353,7 @@ const InvoiceList = () => {
                     invoices={paginatedInvoices}
                     onDetail={handleShowResidentDetail}
                     renderStatus={renderStatus}
+                    isAdmin={true}
                     onEdit={(invoice) => {
                       setEditInvoice(invoice);
                       setShowEditForm(true);
