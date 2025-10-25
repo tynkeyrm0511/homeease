@@ -484,10 +484,15 @@ body {
   }
 }
 .body-content {
+  /* leave space for fixed header and ensure content fills remaining viewport */
   padding-top: 64px;
+  min-height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: column;
 }
 @media (max-width: 600px) {
   .body-content {
     padding-top: 56px;
+    min-height: calc(100vh - 56px);
   }
 }

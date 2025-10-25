@@ -57,9 +57,19 @@ export const getInvoicePaymentStatus = (invoiceId) => api.get(`/invoice/${invoic
 export const confirmMockPayment = (sessionId) => api.post(`/invoice/mock-pay/${sessionId}/confirm`).then(res => res.data);
 
 // --- Request API ---
-export const getRequests = (params) => api.get('/request', { params }).then(res => res.data);
+export const getRequests = (params) =>
+  api.get('/request', { params }).then(res => {
+    // Normalize to always return an array of requests for consumers
+    const d = res.data;
+    if (Array.isArray(d)) return d;
+    if (d && Array.isArray(d.data)) return d.data;
+    // Fallback: if server returned a single object, wrap it
+    if (d && typeof d === 'object') return [d];
+    return [];
+  });
 export const getRequestById = (id) => api.get(`/request/${id}`).then(res => res.data);
 export const updateRequestStatus = (id, data) => api.put(`/request/${id}`, data).then(res => res.data);
+export const cancelRequest = (id) => api.post(`/request/${id}/cancel`).then(res => res.data);
 export const createRequest = (data) => api.post('/request', data).then(res => res.data);
 
 // --- Notification API ---

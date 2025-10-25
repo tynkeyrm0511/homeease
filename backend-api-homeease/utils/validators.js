@@ -26,11 +26,14 @@ const invoiceSchema = Joi.object({
 
 //Request validation schema
 const requestSchema = Joi.object({
+    // Optional title field (frontend sends `title`) - allow it to avoid Joi unknown key errors
+    title: Joi.string().optional(),
     description: Joi.string().required(),
-    status: Joi.string().valid('pending', 'in_progress', 'completed', 'rejected').optional(),
+    status: Joi.string().valid('pending', 'in_progress', 'completed', 'rejected', 'cancelled').optional(),
     category: Joi.string().optional(),
     priority: Joi.string().valid('low', 'medium', 'high').optional(),
-    userId: Joi.number().integer().required()
+    // userId is optional because authenticated users will be set from token on the server
+    userId: Joi.number().integer().optional()
 });
 
 //Notification validation schema
