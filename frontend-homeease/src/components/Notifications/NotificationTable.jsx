@@ -17,7 +17,8 @@ const getTargetTag = (target) => {
   }
 };
 
-const getColumns = (onEdit, onDelete, onDetail) => [
+const getColumns = (onEdit, onDelete, onDetail, isAdmin) => {
+  const cols = [
   { 
     title: 'ID', 
     dataIndex: 'id', 
@@ -90,23 +91,29 @@ const getColumns = (onEdit, onDelete, onDetail) => [
     width: 120,
     render: (user) => user?.name || 'Admin'
   },
-  { 
-    title: 'Hành động', 
-    key: 'action', 
-    width: 120,
-    render: (_, record) => (
-      <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
-        <Button type="text" icon={<EyeOutlined />} onClick={() => onDetail(record)} />
-        <Button type="text" icon={<EditOutlined />} onClick={() => onEdit(record)} />
-        <Button type="text" danger icon={<DeleteOutlined />} onClick={() => onDelete(record)} />
-      </div>
-    )
-  }
-];
+  ];
 
-const NotificationTable = ({ notifications, onEdit, onDelete, onDetail }) => (
+  if (isAdmin) {
+    cols.push({
+      title: 'Hành động', 
+      key: 'action', 
+      width: 120,
+      render: (_, record) => (
+        <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
+          <Button type="text" icon={<EyeOutlined />} onClick={() => onDetail(record)} />
+          <Button type="text" icon={<EditOutlined />} onClick={() => onEdit(record)} />
+          <Button type="text" danger icon={<DeleteOutlined />} onClick={() => onDelete(record)} />
+        </div>
+      )
+    })
+  }
+
+  return cols;
+};
+
+const NotificationTable = ({ notifications, onEdit, onDelete, onDetail, isAdmin }) => (
   <Table
-    columns={getColumns(onEdit, onDelete, onDetail)}
+    columns={getColumns(onEdit, onDelete, onDetail, isAdmin)}
     dataSource={notifications}
     rowKey="id"
     pagination={{ pageSize: 10 }}

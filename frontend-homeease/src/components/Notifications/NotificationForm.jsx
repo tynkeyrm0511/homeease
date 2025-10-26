@@ -102,7 +102,6 @@ const NotificationForm = ({ initialValues = {}, onFinish, onCancel }) => {
         >
           <Option value="all">Tất cả cư dân</Option>
           <Option value="residentId">Cư dân cụ thể</Option>
-          <Option value="group">Nhóm cư dân</Option>
         </Select>
       </Form.Item>
 
@@ -129,22 +128,7 @@ const NotificationForm = ({ initialValues = {}, onFinish, onCancel }) => {
         </Form.Item>
       )}
 
-      {targetType === 'group' && (
-        <Form.Item
-          name="group"
-          label="Chọn nhóm"
-          rules={[{ required: true, message: 'Vui lòng chọn nhóm cư dân' }]}
-        >
-          <Select placeholder="Chọn nhóm">
-            <Option value="floor1">Tầng 1</Option>
-            <Option value="floor2">Tầng 2</Option>
-            <Option value="floor3">Tầng 3</Option>
-            <Option value="block-a">Block A</Option>
-            <Option value="block-b">Block B</Option>
-            <Option value="new-residents">Cư dân mới</Option>
-          </Select>
-        </Form.Item>
-      )}
+      {/* group option removed - simplified to only 'all' and 'residentId' */}
 
       <Form.Item>
         <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>

@@ -101,10 +101,33 @@ const deleteNotification = async (req,res) => {
         })
     }
 }
+// Get notifications for authenticated user (including global 'all')
+const getNotificationsForUser = async (req, res) => {
+    try {
+        const userId = req.user && req.user.id ? Number(req.user.id) : undefined
+        const where = {
+            OR: [
+                { userId: userId },
+                { target: 'all' }
+            ]
+        }
+        const notifications = await prisma.notification.findMany({
+            where,
+            include: { user: true },
+            orderBy: { createdAt: 'desc' }
+        })
+        res.json(notifications)
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({ error: 'Failed to fetch notifications for user' })
+    }
+}
+
 module.exports = {
     getNotifications,
     getNotificationDetail,
     addNotification,
     updateNotification,
-    deleteNotification
+    deleteNotification,
+    getNotificationsForUser
 }

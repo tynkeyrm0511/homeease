@@ -49,16 +49,20 @@ const authenticateToken = (req, res, next) => {
 
 // Admin authorization middleware
 const authorizeAdmin = (req, res, next) => {
-  console.log('Admin check - User:', req.user); 
-  console.log('Admin check - Role:', req.user?.role);
-  
-  if (req.user && req.user.role === 'admin') {
+  console.log('Admin check - User:', req.user);
+
+  // Accept role from several possible payload keys and compare case-insensitively
+  const rawRole = req.user?.role || req.user?.userRole || req.user?.roleName || req.user?.user_role;
+  const role = typeof rawRole === 'string' ? rawRole.toLowerCase() : rawRole;
+  console.log('Admin check - resolved role:', role);
+
+  if (req.user && role === 'admin') {
     console.log('Access granted: Admin role verified');
-    next();
-  } else {
-    console.log('Access denied: Admin role required, but user has role:', req.user?.role);
-    res.status(403).json({ message: 'Access denied: Admin role required' });
+    return next();
   }
+
+  console.log('Access denied: Admin role required, but user has role:', role);
+  return res.status(403).json({ message: 'Access denied: Admin role required' });
 };
 
 // Self or admin authorization middleware

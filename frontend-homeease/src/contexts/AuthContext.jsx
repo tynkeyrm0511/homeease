@@ -2,6 +2,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from 'react';
 import api from '../services/api';
+import { Modal } from 'antd'
 
 /*
   Note: react-refresh rule can complain when files export non-component values alongside components.
@@ -39,6 +40,40 @@ export const AuthProvider = ({ children }) => {
     };
     verifyToken();
   }, [token]);
+
+  // When user becomes available (login or verify), fetch latest notification and show popup once
+  useEffect(() => {
+    if (!user) return
+    const run = async () => {
+      try {
+  // attempt to fetch notifications for this user via /notification/me
+  const res = await api.get('/notification/me')
+  const data = Array.isArray(res.data) ? res.data : res.data || []
+        if (!data.length) return
+        // find newest by createdAt
+        data.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt))
+        const latest = data[0]
+        const seenKey = `seenNotification:${user.id}`
+        const lastSeen = localStorage.getItem(seenKey)
+        if (!latest || String(latest.id) === String(lastSeen)) return
+
+        // show modal popup with title/content; mark seen when user clicks
+        Modal.info({
+          title: latest.title || 'Thông báo mới',
+          content: (<div>{latest.content}</div>),
+          okText: 'Đã xem',
+          onOk: () => {
+            try { localStorage.setItem(seenKey, String(latest.id)) } catch (e) { console.warn(e) }
+          }
+        })
+      } catch (err) {
+        // silently ignore notification errors
+        console.debug('No notification popup (err)', err?.message || err)
+      }
+    }
+    run()
+    return () => {}
+  }, [user])
 
   const login = async (email, password) => {
     try {

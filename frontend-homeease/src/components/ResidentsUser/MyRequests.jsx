@@ -11,7 +11,22 @@ const MyRequests = ({ onNavigate }) => {
   const [requests, setRequests] = useState([])
   const [selected, setSelected] = useState(null)
   const { user } = useAuth()
-  const isAdmin = user?.role === 'admin'
+  // derive current user info, fallback to decoding token if AuthContext hasn't populated yet
+  const decodeToken = () => {
+    try {
+      const t = localStorage.getItem('token')
+      if (!t) return null
+      const payload = JSON.parse(atob(t.split('.')[1]))
+      return payload
+    } catch {
+      return null
+    }
+  }
+
+  const tokenPayload = decodeToken()
+  const currentUserId = user?.id || tokenPayload?.userId || tokenPayload?.id
+  const currentUserRole = (user?.role || tokenPayload?.role || tokenPayload?.userRole || '').toLowerCase()
+  const isAdmin = currentUserRole === 'admin'
 
   const fetch = async () => {
     try {
@@ -113,25 +128,60 @@ const MyRequests = ({ onNavigate }) => {
 
               const categoryLabel = categoryMap[r.category] || r.category || 'Yêu cầu';
 
+              // color classes for category tags
+              const categoryColorMap = {
+                electricity: 'bg-yellow-100 text-yellow-800',
+                water: 'bg-blue-100 text-blue-800',
+                cleaning: 'bg-green-100 text-green-800',
+                parking: 'bg-indigo-100 text-indigo-800',
+                service: 'bg-purple-100 text-purple-800',
+                other: 'bg-gray-100 text-gray-800'
+              };
+              const categoryColorClass = categoryColorMap[r.category] || 'bg-gray-100 text-gray-800';
+
               // Prefer an explicit title, otherwise use first line/summary of description
               const displayTitle = r.title && r.title.trim()
                 ? r.title
                 : (r.description && r.description.split('\n')[0].slice(0, 80)) || 'Không có tiêu đề';
 
-              // Human-friendly status (optional translation)
-              const statusLabel = r.status === 'pending' ? 'pending' : r.status;
+              // Human-friendly status (Vietnamese labels)
+              const statusMap = {
+                pending: 'Đang chờ',
+                in_progress: 'Đang xử lý',
+                completed: 'Hoàn thành',
+                rejected: 'Từ chối',
+                cancelled: 'Đã hủy'
+              };
+              const statusLabel = statusMap[r.status] || r.status;
 
               return (
                 // Use overflow-hidden and a subtle shadow + transparent border so rounded corners render cleanly
                 <div key={r.id} className="bg-white rounded-2xl p-4 shadow-sm overflow-hidden border border-transparent">
                   <div className="flex items-start justify-between">
                     <div>
-                      <div className="text-sm text-gray-600">{categoryLabel}</div>
+                      <div className="text-sm">
+                        <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${categoryColorClass}`}>{categoryLabel}</span>
+                      </div>
                       <div className="mt-1 font-medium">{displayTitle}</div>
                       <div className="mt-2 text-xs text-gray-400">{new Date(r.createdAt || r.created_at || Date.now()).toLocaleString()}</div>
                     </div>
                     <div className="flex flex-col items-end gap-2">
-                      <div className="px-3 py-1 rounded-full text-xs bg-gray-100">{statusLabel}</div>
+                      {/* status badge with color */}
+                      {(() => {
+                        const statusColorMap = {
+                          pending: 'bg-yellow-100 text-yellow-800',
+                          in_progress: 'bg-blue-100 text-blue-800',
+                          completed: 'bg-green-100 text-green-800',
+                          rejected: 'bg-red-100 text-red-800',
+                          cancelled: 'bg-gray-100 text-gray-600'
+                        };
+                        const statusClass = statusColorMap[r.status] || 'bg-gray-100 text-gray-800';
+                        return (
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusClass}`}>
+                            {statusLabel}
+                          </span>
+                        )
+                      })()}
                       <Button size="mini" onClick={() => openDetail(r.id)}>Xem</Button>
                     </div>
                   </div>
@@ -153,6 +203,7 @@ const MyRequests = ({ onNavigate }) => {
           loading={loading}
           onCancel={handleCancel}
           isAdmin={isAdmin}
+          isOwner={Number(selected.userId) === Number(currentUserId)}
         />
       )}
     </div>

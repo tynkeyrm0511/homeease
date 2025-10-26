@@ -88,6 +88,8 @@ async function updateRequest(req, res) {
   try {
     const { id } = req.params;
     const { description, status, category, priority, userId } = req.body;
+    console.log('updateRequest - req.user:', req.user);
+    console.log('updateRequest - id:', id, 'body:', req.body);
     const updatedRequest = await prisma.request.update({
       where: { id: Number(id) },
       data: { description, status, category, priority, userId: userId ? Number(userId) : undefined },

@@ -249,6 +249,8 @@ const RequestAdminPage = () => {
           onStatusChange={handleStatusChange}
           onSave={handleSave}
           loading={modalLoading}
+          isAdmin={true}
+          isOwner={false}
         />
       </div>
     </Card>

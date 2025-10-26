@@ -258,7 +258,7 @@ const ResidentDashboard = ({ onNavigate }) => {
         className="mt-4 sm:mt-6 pb-4 sm:pb-6"
       >
         <h3 className="mb-3 text-base sm:text-lg font-bold text-gray-900">Hoạt động gần đây</h3>
-        <RecentActivity userId={user?.id} />
+        <RecentActivity userId={user?.id} onNavigate={handleMenuClick} />
       </motion.div>
       </div>
 

@@ -1,10 +1,15 @@
-import React, { useContext, useState, useEffect, useRef } from 'react'
-import { AuthContext } from '../contexts/AuthContext'
+import React, { useState, useEffect, useRef } from 'react'
+import { useAuth } from '../contexts/AuthContext'
 import { Button } from 'antd'
 import { NavBar, Popup } from 'antd-mobile'
 import '../header-fix.css'
 import { createPortal } from 'react-dom'
 import { MdDashboard, MdRequestPage, MdPayment, MdNotifications, MdPerson, MdPeople, MdLogout, MdClose } from 'react-icons/md'
+import api from '../services/api'
+import NotificationDetail from './Notifications/NotificationDetail'
+import { motion, AnimatePresence } from 'framer-motion'
+// mark motion as used in plain JS so linters that don't detect JSX usage won't complain
+void motion
 
 // Hook: lock body scroll and compensate for scrollbar width when `open` is true
 function useLockBodyScrollWhen(open) {
@@ -29,11 +34,36 @@ function useLockBodyScrollWhen(open) {
   }, [open])
 }
 
-const Header = ({ setCurrentView }) => {
-  const { user, logout } = useContext(AuthContext)
+  const Header = ({ setCurrentView }) => {
+  const { user, logout } = useAuth()
   const [showDropdown, setShowDropdown] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const dropdownRef = useRef(null)
+  const [notifications, setNotifications] = useState([])
+  const [notifOpen, setNotifOpen] = useState(false)
+  const [notifModalOpen, setNotifModalOpen] = useState(false)
+  const [notifModalId, setNotifModalId] = useState(null)
+
+  // localStorage key to store seen notification ids per user
+  const seenKey = user?.id ? `seenNotifications:${user.id}` : null
+
+  const loadSeenSet = () => {
+    try {
+      if (!seenKey) return new Set()
+      const raw = localStorage.getItem(seenKey)
+      if (!raw) return new Set()
+      return new Set(raw.split(',').filter(Boolean))
+    } catch {
+      return new Set()
+    }
+  }
+
+  const saveSeenSet = (set) => {
+    try {
+      if (!seenKey) return
+      localStorage.setItem(seenKey, Array.from(set).join(','))
+  } catch { /* ignore */ }
+  }
 
   const handleLogout = () => {
     logout()
@@ -71,11 +101,12 @@ const Header = ({ setCurrentView }) => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowDropdown(false)
+        setNotifOpen(false)
       }
     }
-    if (showDropdown) document.addEventListener('mousedown', handleClickOutside)
+    if (showDropdown || notifOpen) document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [showDropdown])
+  }, [showDropdown, notifOpen])
 
   // Dev helper & auto-hide are included for debugging; safe in development only
   useEffect(() => {
@@ -121,6 +152,52 @@ const Header = ({ setCurrentView }) => {
       console.error('header debug failed', e)
     }
   }, [])
+
+  // Fetch notifications for header (recent)
+  useEffect(() => {
+    if (!user) return
+    let mounted = true
+    const fetch = async () => {
+      try {
+        const path = user.role === 'admin' ? '/notification' : '/notification/me'
+        const res = await api.get(path)
+        if (!mounted) return
+        const list = Array.isArray(res.data) ? res.data : []
+        // sort desc
+        list.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt))
+        // for non-admin users, ensure only notifications for that user
+        if (user.role !== 'admin') {
+          const uid = Number(user.id)
+          const filtered = list.filter(n => (n?.user && Number(n.user.id) === uid) || (n?.userId && Number(n.userId) === uid))
+          setNotifications(filtered.slice(0,6))
+        } else {
+          setNotifications(list.slice(0,6))
+        }
+      } catch (err) {
+        console.debug('Header notifications fetch failed', err?.message || err)
+      }
+    }
+    fetch()
+    return () => { mounted = false }
+  }, [user])
+
+  const timeAgo = (dateStr) => {
+    if (!dateStr) return ''
+    const d = new Date(dateStr)
+    const diff = Math.floor((Date.now() - d.getTime()) / 1000)
+    if (diff < 60) return `${diff}s`
+    if (diff < 3600) return `${Math.floor(diff/60)}m`
+    if (diff < 86400) return `${Math.floor(diff/3600)}h`
+    return `${Math.floor(diff/86400)}d`
+  }
+
+  // unseenCount computed inline when rendering badge to avoid linter unused var
+
+  const markAsSeen = (id) => {
+    const seen = loadSeenSet()
+    seen.add(String(id))
+    saveSeenSet(seen)
+  }
 
   useEffect(() => {
     try {
@@ -176,23 +253,40 @@ const Header = ({ setCurrentView }) => {
           left: 0,
           right: 0,
           zIndex: 4000,
-          paddingRight: 120
+          paddingRight: 16
         }}
         right={(
-          <div className="header-right" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', display: 'flex', alignItems: 'center', gap: 14, minWidth: 120, justifyContent: 'flex-end', zIndex: 4200 }}>
-            <Button type="text" onClick={() => setMobileMenuOpen(true)} aria-label="Mở menu" style={{ padding: 0, color: '#fff', marginRight: 6, zIndex: 4200 }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 6H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M3 12H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M3 18H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </Button>
-            <div ref={dropdownRef} style={{ width: 40, height: 40, borderRadius: 20, background: 'rgba(255,255,255,0.25)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, cursor: 'pointer', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', marginLeft: 4, zIndex: 4200, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }} onClick={() => setShowDropdown(!showDropdown)}>
+          <div className="header-right" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', display: 'flex', alignItems: 'center', gap: 12, justifyContent: 'flex-end', zIndex: 4200 }}>
+            {/* Notification bell - only for residents */}
+            {isResident && (
+              <div className="notif-wrap" style={{ marginRight: 6 }}>
+                <Button className="notif-btn" type="text" onClick={() => setNotifOpen(!notifOpen)} aria-label="Thông báo">
+                  <MdNotifications size={20} />
+                </Button>
+                {(() => { const seen = loadSeenSet(); const cnt = notifications.filter(n => !seen.has(String(n.id))).length; return cnt > 0 ? (
+                  <div className="notif-badge">
+                    {cnt > 9 ? '9+' : cnt}
+                  </div>
+                ) : null })()}
+              </div>
+            )}
+            <div ref={dropdownRef} className="avatar-circle" onClick={() => setShowDropdown(!showDropdown)}>
               {user?.name?.charAt(0) || 'U'}
             </div>
           </div>
         )}
       >
+        {/* Left: mobile menu button (kept left to avoid crowding title) */}
+        <div style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', zIndex: 4200 }}>
+          <Button type="text" onClick={() => setMobileMenuOpen(true)} aria-label="Mở menu" style={{ padding: 0, color: '#fff' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 6H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M3 12H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M3 18H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </Button>
+        </div>
+
         <div
           className="header-title"
           role="button"
@@ -215,6 +309,11 @@ const Header = ({ setCurrentView }) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
+            ,
+            maxWidth: 'calc(100% - 180px)',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
           }}
         >
           HomeEase
@@ -222,15 +321,119 @@ const Header = ({ setCurrentView }) => {
       </NavBar>
 
       {showDropdown && (
-        <div style={{ position: 'absolute', top: 70, right: 12, zIndex: 5000, minWidth: 180 }}>
-          <div style={{ background: '#fff', borderRadius: 8, padding: 8, boxShadow: '0 6px 18px rgba(0,0,0,0.08)' }}>
-            <Button type="text" style={{ width: '100%', textAlign: 'left' }} onClick={() => { setShowDropdown(false); handleMenuClick('profile') }}>Thông tin cá nhân</Button>
-            <Button type="text" style={{ width: '100%', textAlign: 'left' }} onClick={() => { setShowDropdown(false); handleMenuClick('profile') }}>Cài đặt</Button>
-            <div style={{ height: 8 }} />
-            <Button type="text" danger style={{ width: '100%', textAlign: 'left' }} onClick={() => { setShowDropdown(false); handleLogout() }}>Đăng xuất</Button>
-          </div>
-        </div>
+        <AnimatePresence>
+        {showDropdown && (
+          <motion.div
+            initial={{ opacity: 0, y: -8, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.95 }}
+            transition={{ duration: 0.15 }}
+            style={{ position: 'absolute', top: 70, right: 12, zIndex: 5000, minWidth: 200 }}
+          >
+            <div style={{ 
+              background: '#fff', 
+              borderRadius: 12, 
+              padding: '12px 8px', 
+              boxShadow: '0 10px 30px rgba(2,6,23,0.12)',
+              border: '1px solid rgba(0,0,0,0.06)'
+            }}>
+              {/* User info header */}
+              <div style={{ 
+                padding: '8px 12px', 
+                marginBottom: '8px',
+                borderBottom: '1px solid #f0f0f0'
+              }}>
+                <div style={{ fontWeight: 600, fontSize: '14px', color: '#1f2937' }}>
+                  {user?.name || 'User'}
+                </div>
+                <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '2px' }}>
+                  {user?.role === 'admin' ? 'Administrator' : 'Cư dân'}
+                </div>
+              </div>
+
+              {/* Menu items */}
+              <Button 
+                type="text" 
+                icon={<MdPerson size={16} />}
+                style={{ 
+                  width: '100%', 
+                  textAlign: 'left',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  marginBottom: '4px'
+                }} 
+                onMouseDown={(e) => {
+                  e.stopPropagation();
+                  setShowDropdown(false);
+                  handleMenuClick('profile');
+                }}
+              >
+                Tài khoản
+              </Button>
+              
+              <Button 
+                type="text" 
+                danger
+                icon={<MdLogout size={16} />}
+                style={{ 
+                  width: '100%', 
+                  textAlign: 'left',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '8px 12px',
+                  borderRadius: '8px'
+                }} 
+                onMouseDown={(e) => {
+                  e.stopPropagation();
+                  setShowDropdown(false);
+                  handleLogout();
+                }}
+              >
+                Đăng xuất
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       )}
+      <AnimatePresence>
+        {notifOpen && (
+          <motion.div
+            key="notif-pop"
+            initial={{ opacity: 0, y: -8, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.98 }}
+            transition={{ duration: 0.18 }}
+            style={{ position: 'absolute', top: 70, right: 68, zIndex: 5000, minWidth: 280 }}
+          >
+            <div className="notif-popover-card">
+              <div style={{ fontWeight: 700, padding: '6px 8px' }}>Thông báo</div>
+              <div style={{ maxHeight: 300, overflow: 'auto' }}>
+                {notifications.length === 0 && <div style={{ padding: 12, color: '#6b7280' }}>Không có thông báo</div>}
+                {notifications.map(n => (
+                  <div key={n.id} className={`notif-item ${loadSeenSet().has(String(n.id)) ? '' : 'unseen'}`} onClick={() => { setNotifModalId(n.id); setNotifModalOpen(true); markAsSeen(n.id) }}>
+                    <div className="avatar">{n.target === 'residentId' ? '👤' : '🔔'}</div>
+                    <div className="meta">
+                      <div className="title">{n.title}</div>
+                      <div className="content">{n.content?.slice(0,80)}</div>
+                    </div>
+                    <div className="time">{timeAgo(n.createdAt)}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="notif-popover-footer">
+                <Button type="link" style={{ padding: '6px 8px' }} onClick={() => { setNotifOpen(false); setCurrentView ? setCurrentView('notifications') : window.location.hash = '#/notifications' }}>Xem tất cả</Button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <NotificationDetail notificationId={notifModalId} visible={notifModalOpen} onClose={() => setNotifModalOpen(false)} />
     </div>
   )
 
