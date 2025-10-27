@@ -496,3 +496,60 @@ body {
     min-height: calc(100vh - 56px);
   }
 }
+
+/* Profile Tab Styles */
+.ant-tabs.h-full {
+  display: flex;
+  flex-direction: column;
+}
+
+.ant-tabs-content-holder {
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Remove bottom border for tabs in header */
+.ant-tabs-no-bottom-border .ant-tabs-nav::before {
+  display: none !important;
+}
+
+/* Customize tab styles */
+.ant-tabs-no-bottom-border .ant-tabs-tab {
+  padding: 8px 16px !important;
+  margin: 0 4px !important;
+}
+
+.ant-tabs-content {
+  height: 100%;
+}
+
+.ant-tabs-tabpane {
+  height: 100%;
+}
+
+.ant-form-item {
+  margin-bottom: 16px;
+}
+
+/* Profile Stats Card */
+.profile-stats-card {
+  background: linear-gradient(45deg, var(--primary), var(--primary-hover));
+  color: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.profile-stats-value {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.profile-stats-label {
+  font-size: 14px;
+  opacity: 0.9;
+}

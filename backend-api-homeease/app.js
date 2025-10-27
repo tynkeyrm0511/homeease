@@ -17,6 +17,7 @@ const invoiceRoute = require('./routes/invoice');
 const requestRoute = require('./routes/request');
 const notificationRoute = require('./routes/notification');
 const authRoute = require('./routes/auth');
+const profileRoute = require('./routes/profile');
 
 // Apply middleware
 applyMiddlewares(app);
@@ -28,6 +29,7 @@ app.use('/invoice', invoiceRoute);
 app.use('/request', requestRoute);
 app.use('/notification', notificationRoute);
 app.use('/auth', authRoute);
+app.use('/profile', profileRoute);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

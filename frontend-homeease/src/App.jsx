@@ -13,7 +13,7 @@ import NotificationList from './components/Notifications/NotificationList';
 import ResidentDashboard from './components/ResidentsUser/ResidentDashboard';
 import MyRequests from './components/ResidentsUser/MyRequests';
 import MyInvoices from './components/ResidentsUser/MyInvoices';
-import ResidentProfile from './components/ResidentsUser/ResidentProfile';
+import ProfileLayout from './components/Profile/ProfileLayout';
 import CreateRequest from './components/ResidentsUser/CreateRequest';
 import { Spin } from 'antd';
 import { ToastContainer } from 'react-toastify';
@@ -143,7 +143,7 @@ function AppContent() {
             {!tabLoading && currentView === 'invoice-detail' && <InvoiceDetail invoice={selectedInvoice} onPay={() => { handleTabChange('pay-invoice'); }} onBack={() => handleTabChange('my-invoices')} />}
             {!tabLoading && currentView === 'pay-invoice' && <PayInvoice invoice={selectedInvoice} onBack={() => handleTabChange('invoice-detail')} />}
             {!tabLoading && currentView === 'create-request' && <CreateRequest onNavigate={handleTabChange} />}
-          {!tabLoading && currentView === 'profile' && <ResidentProfile />}
+          {!tabLoading && currentView === 'profile' && <ProfileLayout />}
         </div>
       )}
     </>
