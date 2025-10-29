@@ -63,51 +63,51 @@
 <table>
   <tr>
     <td width="50%">
-      <img src="docs/screenshots/01-login.png" alt="Login Page"/>
+      <img src="docs/screenshots/Login_Page.png" alt="Login Page"/>
       <p align="center"><b>Trang đăng nhập</b></p>
     </td>
     <td width="50%">
-      <img src="docs/screenshots/02-dashboard-admin.png" alt="Admin Dashboard"/>
+      <img src="docs/screenshots/Admin_Dashboard.png" alt="Admin Dashboard"/>
       <p align="center"><b>Dashboard Admin</b></p>
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <img src="docs/screenshots/03-residents-list.png" alt="Residents Management"/>
+      <img src="docs/screenshots/Residents_Management.png" alt="Residents Management"/>
       <p align="center"><b>Quản lý cư dân</b></p>
     </td>
     <td width="50%">
-      <img src="docs/screenshots/04-resident-detail.png" alt="Resident Detail"/>
+      <img src="docs/screenshots/Residents_Detail.png" alt="Resident Detail"/>
       <p align="center"><b>Chi tiết cư dân</b></p>
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <img src="docs/screenshots/05-invoices-list.png" alt="Invoice Management"/>
+      <img src="docs/screenshots/Invoices_Management.png" alt="Invoice Management"/>
       <p align="center"><b>Quản lý hóa đơn</b></p>
     </td>
     <td width="50%">
-      <img src="docs/screenshots/06-invoice-payment.png" alt="Payment QR"/>
+      <img src="docs/screenshots/Payment_QR.png" alt="Payment QR"/>
       <p align="center"><b>Thanh toán QR Code</b></p>
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <img src="docs/screenshots/07-requests-admin.png" alt="Service Requests"/>
+      <img src="docs/screenshots/Service_Requests.png" alt="Service Requests"/>
       <p align="center"><b>Quản lý yêu cầu dịch vụ</b></p>
     </td>
     <td width="50%">
-      <img src="docs/screenshots/08-notifications.png" alt="Notifications"/>
+      <img src="docs/screenshots/Notifications.png" alt="Notifications"/>
       <p align="center"><b>Hệ thống thông báo</b></p>
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <img src="docs/screenshots/09-profile.png" alt="User Profile"/>
+      <img src="docs/screenshots/User_Profile.png" alt="User Profile"/>
       <p align="center"><b>Thông tin cá nhân</b></p>
     </td>
     <td width="50%">
-      <img src="docs/screenshots/10-stats.png" alt="Statistics"/>
+      <img src="docs/screenshots/Statistics.png" alt="Statistics"/>
       <p align="center"><b>Thống kê</b></p>
     </td>
   </tr>
@@ -118,25 +118,19 @@
 <table>
   <tr>
     <td width="33%">
-      <img src="docs/screenshots/mobile-01-login.png" alt="Mobile Login"/>
+      <img src="docs/screenshots/Mobile_Login.png" alt="Mobile Login"/>
       <p align="center"><b>Mobile Login</b></p>
     </td>
     <td width="33%">
-      <img src="docs/screenshots/mobile-02-menu.png" alt="Mobile Menu"/>
+      <img src="docs/screenshots/Mobile_Menu.png" alt="Mobile Menu"/>
       <p align="center"><b>Mobile Menu</b></p>
     </td>
     <td width="33%">
-      <img src="docs/screenshots/mobile-03-dashboard.png" alt="Mobile Dashboard"/>
+      <img src="docs/screenshots/Mobile_Dashboard.png" alt="Mobile Dashboard"/>
       <p align="center"><b>Mobile Dashboard</b></p>
     </td>
   </tr>
 </table>
-
-### 🎥 Video Demo (Optional)
-
-[![HomeEase Demo](docs/screenshots/video-thumbnail.png)](https://youtu.be/your-video-id)
-
-> 💡 **Mẹo**: Sử dụng công cụ như [ScreenToGif](https://www.screentogif.com/) hoặc [OBS Studio](https://obsproject.com/) để quay video demo
 
 ## 🛠️ Công nghệ
 
@@ -399,7 +393,7 @@ homeease/
 └── .gitignore                        # Git ignore rules
 ```
 
-## � API Documentation
+##   API Documentation
 
 ### 🔗 Base URL
 ```
@@ -1008,7 +1002,7 @@ npm run preview
 - [Socket.IO](https://socket.io/) - Real-time engine
 - [Recharts](https://recharts.org/) - Chart library
 
-## � Contact & Support
+##   Contact & Support
 
 - **Email**: hoangnguyen.dev2003@gmail.com
 - **GitHub**: [@tynkeyrm0511](https://github.com/tynkeyrm0511)
@@ -1025,7 +1019,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
   
 ### ⭐ Nếu project này hữu ích, hãy cho 1 star nhé! ⭐
 
-**Made with ❤️ by HomeEase Team**
+**Made with ❤️ by Syntax Ngo**
 
 © 2025 HomeEase - All Rights Reserved
 
