@@ -1,0 +1,17 @@
+# Screenshots folder
+# Place your project screenshots here following the naming convention in SCREENSHOT_GUIDE.md
+
+## Expected files:
+# 01-login.png
+# 02-dashboard-admin.png
+# 03-residents-list.png
+# 04-resident-detail.png
+# 05-invoices-list.png
+# 06-invoice-payment.png
+# 07-requests-admin.png
+# 08-notifications.png
+# 09-profile.png
+# 10-stats.png
+# mobile-01-login.png
+# mobile-02-menu.png
+# mobile-03-dashboard.png
